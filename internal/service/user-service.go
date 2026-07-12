@@ -1,6 +1,7 @@
 package service
 
 import (
+	_ "blog/internal/config"
 	"blog/internal/models"
 	"blog/internal/storage"
 	"fmt"
@@ -11,14 +12,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var secret_key = []byte("test-key-not-real")
-
 type AuthService struct {
 	repo storage.UserRepository
+	secret_key []byte
 }
 
-func NewAuthService(userDB storage.UserRepository) *AuthService {
-	return &AuthService{repo: userDB}
+func NewAuthService(userDB storage.UserRepository, secret_key []byte) *AuthService {
+	return &AuthService{repo: userDB, secret_key: secret_key}
 }
 
 func (ur *AuthService) HashPassword(password string) (hashed_password string, err error) {
@@ -40,13 +40,13 @@ func (ur *AuthService) Generate_Token(id int) (token string, err error) {
 	}
 	new_token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 
-	return new_token.SignedString(secret_key)
+	return new_token.SignedString(ur.secret_key)
 
 }
 
 func (ur *AuthService) Validate_Token(tokenString string) (Id int, err error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
-		return secret_key, nil
+		return ur.secret_key, nil
 	})
 	if err != nil {
 		return 0, fmt.Errorf("Parsing error: %v", err)

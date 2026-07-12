@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blog/internal/config"
 	"blog/internal/handler"
 	"blog/internal/middleware"
 	"blog/internal/router"
@@ -8,17 +9,25 @@ import (
 	"blog/internal/storage"
 	"log"
 	"net/http"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 
-	db := storage.ConnectDataBase("user=myuser password=Hydra1234 dbname=sqldb sslmode=disable")
+	if err := godotenv.Overload(); err != nil {
+		log.Println(".Env not found")
+	}
+
+	cfg := config.Load()
+
+	db := storage.ConnectDataBase(cfg.DSN())
 	defer db.Close()
 
 	postDB := storage.NewPostRepo(db)
 	userDB := storage.NewUserRepo(db)
 	postService := service.NewPostService(*postDB)
-	authService := service.NewAuthService(*userDB)
+	authService := service.NewAuthService(*userDB, []byte(cfg.JWTSecret))
 	postHandler := handler.NewPostHandler(*postDB, *postService)
 	userHandler := handler.NewUserHandler(*authService)
 	middleware := middleware.NewAuthMiddleware(*authService)
@@ -26,9 +35,9 @@ func main() {
 	router := router.Router(*postDB, *userDB, *postHandler, *userHandler, *authService, *middleware)
 
 	log.Println("Server is started...")
-	log.Println("Go to http://localhost:8080")
+	log.Printf("Go to http://localhost:%v", cfg.Port)
 
-	err := http.ListenAndServe("127.0.0.1:8080", router)
+	err := http.ListenAndServe(":"+cfg.Port, router)
 	if err != nil {
 		log.Fatalln(err)
 	}
