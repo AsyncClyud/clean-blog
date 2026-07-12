@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Clean Blog</title>
+        <meta name="description" content="Main Page of clean Blog" />
+        <link rel="stylesheet" href="styles/styles.css">
+        <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+        <link rel="shortcut icon" href="/icons/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Clean Blog" />
+        <link rel="manifest" href="/icons/site.webmanifest" />
+        <script src="scripts/articles.js"></script>
+    </head>
+    <body>
+        <header class="header" id="header">
+            <div id="header">
+                <h1>Clean Blog</h1>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/register">Register</a>
+                <a href="/article/create">Create article</a>
+                <a href="/profile">Profile</a>
+            </div>
+        </header>
+
+        <main class="main" id="main">
+            <div id="main" class="main"></div>
+        </main>
+
+        <script>
+            Fetch_Articles();
+        </script>
+
+        <footer class="footer" id="footer">
+
+        </footer>
+    </body>
+</html>
