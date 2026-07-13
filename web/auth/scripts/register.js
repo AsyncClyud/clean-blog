@@ -15,11 +15,5 @@ async function SendRegisterRequest() {
   if (response.ok) {
     const message = JSON.parse(await response.json())
     document.getElementById("status").textContent = message
-    sleep(3500)
-    window.location.replace("/")
   }
-}
-
-function sleep(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
 }
