@@ -23,10 +23,37 @@ async function Fetch_Article() {
       <h3 id = "title">${article.Title}<h3>
       <p id ="content">${article.Content}</p>
       <p id="created_at">${article.Created_at}</p>
+      <p>Article Author ID:</p>
+      <p id="author_id">${article.Author}</p>
       `;
       main_element.appendChild(article_element);
       document.title = article.Title
     });
+    await GetArticleAuthor()
+  }
+}
+
+async function GetArticleAuthor() {
+  const author_id = document.getElementById("author_id").textContent
+
+  const response = await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      Author: Number(author_id)
+      })
+  })
+  if (response.ok) {
+    const main_element = document.getElementById("main")
+    const delete_button = document.createElement("button")
+//  const update_button = document.createElement("button")
+
+    delete_button.textContent = `Delete article`
+    delete_button.setAttribute("onclick", "SendDeleteRequest()")
+//  update_button.textContent = `Update article`
+
+    main_element.appendChild(delete_button)
+//  main_element.appendChild(update_button)
   }
 }
 
@@ -45,5 +72,22 @@ async function SendCreateRequest() {
   if (response.ok) {
     const message = JSON.parse(await response.json())
     document.getElementById("status").textContent = message
+  }
+}
+
+async function SendDeleteRequest() {
+  const article_id = GetPathValue()
+  const author_id = document.getElementById("author_id").textContent
+
+  const response = await fetch("/api/articles", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      Id: Number(article_id),
+      Author: Number(author_id)
+    })
+  })
+  if (response.ok) {
+   document.location.replace("/")
   }
 }
