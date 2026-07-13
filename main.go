@@ -28,7 +28,7 @@ func main() {
 	userDB := storage.NewUserRepo(db)
 	postService := service.NewPostService(*postDB)
 	authService := service.NewAuthService(*userDB, []byte(cfg.JWTSecret))
-	postHandler := handler.NewPostHandler(*postDB, *postService)
+	postHandler := handler.NewPostHandler(*postService, *authService)
 	userHandler := handler.NewUserHandler(*authService)
 	middleware := middleware.NewAuthMiddleware(*authService)
 
