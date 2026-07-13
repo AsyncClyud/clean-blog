@@ -33,6 +33,7 @@ func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHa
 	mux.Handle("GET /profile", http.HandlerFunc(userHandler.ProfilePageHandler))
 
 	mux.Handle("GET /api/profile", middleware.RequireAuth(http.HandlerFunc(userHandler.ProfileHandler)))
+	mux.Handle("POST /api/users", middleware.RequireAuth(http.HandlerFunc(userHandler.GetArticleAuthorHandler)))
 	mux.Handle("POST /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.InsertArticleHandler)))
 	mux.Handle("PUT /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.UpdateArticleHandler)))
 	mux.Handle("DELETE /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.DeleteArticleHandler)))
