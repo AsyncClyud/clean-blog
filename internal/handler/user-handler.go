@@ -71,14 +71,19 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Accept", "application/json")
 
 	var user models.User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, "Internal error", http.StatusBadGateway)
+	error_decode := json.NewDecoder(r.Body).Decode(&user)
+	if error_decode != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
 		return
 	}
 
-	status_code := ush.authService.Register(user)
-	ResponseRegistration(status_code, w, r)
+	status_code, id := ush.authService.Register(user)
+	if status_code == 200 {
+		ush.authService.SetTokenInCookie(w, id)
+		ResponseRegistration(status_code, w, r)
+	} else {
+		ResponseRegistration(status_code, w, r)
+	}
 }
 
 func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,29 +92,42 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	error_decode := json.NewDecoder(r.Body).Decode(&user)
 	if error_decode != nil {
-		http.Error(w, "Internal error", http.StatusBadGateway)
+		http.Error(w, "Invalid body", http.StatusBadRequest)
 		return
 	}
 
 	status_code, id := ush.authService.Login(user)
 	if status_code == 200 {
-		jwt_token, err := ush.authService.Generate_Token(id)
-		if err != nil {
-			http.Error(w, "Internal error", http.StatusBadGateway)
-			return
-		}
-		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt-token",
-			Value:    jwt_token,
-			Path:     "/",
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-			MaxAge:   1600 * 20,
-		})
+		ush.authService.SetTokenInCookie(w, id)
 		ResponseLogin(status_code, w, r)
 	} else {
 		ResponseLogin(status_code, w, r)
+	}
+
+}
+
+func (ush *UserHandler) GetArticleAuthorHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Accept", "application/json")
+
+	cookie, exist := r.Cookie("jwt-token")
+	if exist != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, validation_err := ush.authService.Validate_Token(cookie.Value)
+	if validation_err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var author models.Article
+	error_decode := json.NewDecoder(r.Body).Decode(&author)
+	if error_decode != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+		return
+	}
+	if claims != author.Author {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	}
 
 }

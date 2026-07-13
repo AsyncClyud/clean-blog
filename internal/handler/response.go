@@ -25,6 +25,8 @@ func ResponseRegistration(status_code int, w http.ResponseWriter, r *http.Reques
 		FormatIntoJson("Account has been created!", w)
 	case status_code == 400:
 		FormatIntoJson("Account with this username is already exist!", w)
+	case status_code == 406:
+		FormatIntoJson("Username or Password is too short!(6 symbols for password, username len > 3)", w)
 	case status_code == 502:
 		FormatIntoJson("Internal error!", w)
 	}
@@ -34,16 +36,22 @@ func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
 	case status_code == 200:
 		FormatIntoJson("You has been successfully logined!", w)
+	case status_code == 400:
+		FormatIntoJson("User with this username doesn't exist!", w)
+	case status_code == 406:
+		FormatIntoJson("Invalid password!", w)
 	case status_code == 404:
 		FormatIntoJson("Invalid username or password!", w)
 	}
 }
 
-func ResponseCreateArticle(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
 	case status_code == 200:
 		FormatIntoJson("Article has been created!", w)
 	case status_code == 400:
 		FormatIntoJson("Article's title or content too short!", w)
+	case status_code == 403:
+		FormatIntoJson("You don't have permission to delete/edit this article!", w)
 	}
 }

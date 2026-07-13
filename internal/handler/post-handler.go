@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"blog/internal/contextutil"
 	"blog/internal/models"
 	"blog/internal/service"
-	"blog/internal/storage"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -12,12 +10,12 @@ import (
 )
 
 type PostHandler struct {
-	repo        storage.PostRepository
-	postservice service.PostService
+	postService service.PostService
+	authService service.AuthService
 }
 
-func NewPostHandler(repo storage.PostRepository, postservice service.PostService) *PostHandler {
-	return &PostHandler{repo: repo, postservice: postservice}
+func NewPostHandler(postservice service.PostService, auth service.AuthService) *PostHandler {
+	return &PostHandler{postService: postservice, authService: auth}
 }
 
 func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +30,7 @@ func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request
 func (psh PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	articles := psh.repo.GetAllArticles()
+	articles := psh.postService.GetArticles()
 
 	err := json.NewEncoder(w).Encode(articles)
 	if err != nil {
@@ -49,7 +47,7 @@ func (psh PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Requ
 		http.Error(w, "Invalid Id", http.StatusBadRequest)
 		return
 	}
-	article := psh.repo.GetArticleById(Id)
+	article := psh.postService.GetArticleById(Id)
 
 	error := json.NewEncoder(w).Encode(article)
 	if error != nil {
@@ -70,52 +68,81 @@ func (psh PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.R
 func (psh PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
-	var data models.Article
-	err := json.NewDecoder(r.Body).Decode(&data)
+	var article models.Article
+	err := json.NewDecoder(r.Body).Decode(&article)
 	if err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
-
-	status_code := psh.postservice.ValidateArticle(data)
-	if status_code == 200 {
-		userID, ok := r.Context().Value(contextutil.UserIDKey).(int)
-		if !ok {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-		psh.repo.InsertArticle(data, userID)
-		ResponseCreateArticle(status_code, w, r)
-	} else {
-		ResponseCreateArticle(status_code, w, r)
+	cookie, err := r.Cookie("jwt-token")
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
+	claims, err := psh.authService.Validate_Token(cookie.Value)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	status_code := psh.postService.InsertArticle(article, claims)
+	ResponseArticle(status_code, w, r)
 
 }
 
 func (psh PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
-	var data models.Article
-	err := json.NewDecoder(r.Body).Decode(&data)
+	var article models.Article
+	err := json.NewDecoder(r.Body).Decode(&article)
 	if err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
 
-	psh.repo.UpdateArticle(data)
+	cookie, err := r.Cookie("jwt-token")
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, err := psh.authService.Validate_Token(cookie.Value)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	if article.Author != claims {
+		ResponseArticle(http.StatusForbidden, w, r)
+		return
+	}
+	status_code := psh.postService.UpdateArticle(article)
+	ResponseArticle(status_code, w, r)
 
 }
 
 func (psh PostHandler) DeleteArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
-	var data models.Article
-	err := json.NewDecoder(r.Body).Decode(&data)
+	var article models.Article
+	err := json.NewDecoder(r.Body).Decode(&article)
 	if err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
 
-	psh.repo.DeleteArticle(data)
+	cookie, err := r.Cookie("jwt-token")
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, err := psh.authService.Validate_Token(cookie.Value)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	if article.Author != claims {
+		ResponseArticle(http.StatusForbidden, w, r)
+		return
+	}
+
+	psh.postService.DeleteArticle(article)
 
 }
