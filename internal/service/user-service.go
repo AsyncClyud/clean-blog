@@ -5,6 +5,7 @@ import (
 	"blog/internal/models"
 	"blog/internal/storage"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 )
 
 type AuthService struct {
-	repo storage.UserRepository
+	repo       storage.UserRepository
 	secret_key []byte
 }
 
@@ -67,6 +68,33 @@ func (ur *AuthService) Validate_Token(tokenString string) (Id int, err error) {
 	return int(userID), nil
 }
 
+func (ur *AuthService) SetTokenInCookie(w http.ResponseWriter, id int) {
+	jwt_token, err := ur.Generate_Token(id)
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusBadGateway)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "jwt-token",
+		Value:    jwt_token,
+		Path:     "/",
+		Secure:   false,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   1600 * 20,
+	})
+}
+
+func (ur *AuthService) ValidateUserData(user models.User) (status_code int) {
+	if len(user.Username) <= 2 {
+		return http.StatusBadRequest
+	}
+	if len(user.Password) <= 5 {
+		return http.StatusNotAcceptable
+	}
+	return http.StatusOK
+}
+
 func (ur *AuthService) FetchUser(user_id int) (user string, status_code int) {
 	user, err := ur.repo.GetUserInfo(user_id)
 	if err != nil {
@@ -75,21 +103,34 @@ func (ur *AuthService) FetchUser(user_id int) (user string, status_code int) {
 	return user, http.StatusOK
 }
 
-func (ur *AuthService) Register(user models.User) (status_code int) {
+func (ur *AuthService) Register(user models.User) (status_code, id int) {
+	if ur.ValidateUserData(user) == 400 {
+		return http.StatusNotAcceptable, 0
+	}
+	if ur.ValidateUserData(user) == 406 {
+		return http.StatusNotAcceptable, 0
+	}
 	hashed_password, err := ur.HashPassword(user.Password)
 	if err != nil {
-		return http.StatusBadGateway
+		return http.StatusBadGateway, 0
 	}
 	new_user := models.User{Username: user.Username, Password: hashed_password}
 
-	message := ur.repo.CreateUser(new_user)
+	id, message := ur.repo.CreateUser(new_user)
 	if !message {
-		return http.StatusBadRequest
+		return http.StatusBadRequest, 0
 	}
-	return http.StatusOK
+	log.Println(id)
+	return http.StatusOK, id
 }
 
 func (ur *AuthService) Login(user models.User) (status_code, id int) {
+	if ur.ValidateUserData(user) == 400 {
+		return http.StatusBadRequest, 0
+	}
+	if ur.ValidateUserData(user) == 406 {
+		return http.StatusNotAcceptable, 0
+	}
 	id, hashed_password, ok := ur.repo.CheckIfUserExist(user)
 	if !ok {
 		return http.StatusNotFound, 0
