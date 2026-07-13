@@ -43,19 +43,33 @@ func (ur *UserRepository) CheckIfUserExist(User models.User) (user_id int, hashe
 
 }
 
-func (ur *UserRepository) CreateUser(user models.User) (success bool) {
-	_, _, UserExist := ur.CheckIfUserExist(user)
+func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success bool) {
+	_, _, UserExist := ur.CheckIfUserExist(new_user)
+	var user models.User
 	if !UserExist {
-		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Created_at) VALUES($1, $2, $3)", user.Username, user.Password, time.Now())
+		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Created_at) VALUES($1, $2, $3)", new_user.Username, new_user.Password, time.Now())
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			return 0, false
 		}
-		return true
+		rows, err := ur.db.Query("SELECT Id FROM Users WHERE Username = $1", new_user.Username)
+		if err != nil {
+			rows.Err()
+			return 0, false
+		}
+		defer rows.Close()
+		for rows.Next() {
+			err := rows.Scan(&user.Id)
+			if err != nil {
+				log.Println("Rows scan error:", err)
+				return 0, false
+			}
+		}
 	} else {
-		return false
+		return 0, false
 	}
+	return user.Id, true
 }
-
 func (ur *UserRepository) GetUserInfo(user_id int) (user_info string, err error) {
 	rows, err := ur.db.Query("SELECT Id, Username, Bio, Created_at FROM Users WHERE Id = $1", user_id)
 	if err != nil {
