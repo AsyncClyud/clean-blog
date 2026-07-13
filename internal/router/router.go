@@ -23,6 +23,8 @@ func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHa
 	fsProfile := http.FileServer(http.Dir("web/profile"))
 	mux.Handle("GET /web/profile", http.StripPrefix("/web/profile/", fsProfile))
 
+	mux.Handle("GET /privacy", http.HandlerFunc(postHandler.PrivacyPageHandler))
+	mux.Handle("GET /terms", http.HandlerFunc(postHandler.TermsPageHandler))
 	mux.Handle("GET /article/{Id}", http.HandlerFunc(postHandler.ArticlePageHandler))
 	mux.Handle("GET /api/articles/{Id}", http.HandlerFunc(postHandler.GetArticleByIdHandler))
 	mux.Handle("GET /api/articles", http.HandlerFunc(postHandler.GetArticlesHandler))

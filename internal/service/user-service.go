@@ -80,8 +80,8 @@ func (ur *AuthService) SetTokenInCookie(w http.ResponseWriter, id int) {
 		Path:     "/",
 		Secure:   false,
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
-		MaxAge:   1600 * 20,
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   3200 * 20,
 	})
 }
 

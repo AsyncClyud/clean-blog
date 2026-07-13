@@ -18,7 +18,35 @@ func NewPostHandler(postservice service.PostService, auth service.AuthService) *
 	return &PostHandler{postService: postservice, authService: auth}
 }
 
+func (psh PostHandler) SecurityHeaders(w http.ResponseWriter) {
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+	w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+	w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+}
+
+func (psh PostHandler) PrivacyPageHandler(w http.ResponseWriter, r *http.Request) {
+	psh.SecurityHeaders(w)
+	tmpl, err := template.ParseFiles("web/privacy.html")
+	if err != nil {
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+
+func (psh PostHandler) TermsPageHandler(w http.ResponseWriter, r *http.Request) {
+	psh.SecurityHeaders(w)
+	tmpl, err := template.ParseFiles("web/terms.html")
+	if err != nil {
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+
 func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request) {
+	psh.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/article/article.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -29,6 +57,7 @@ func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request
 
 func (psh PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	psh.SecurityHeaders(w)
 
 	articles := psh.postService.GetArticles()
 
@@ -41,6 +70,7 @@ func (psh PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request
 
 func (psh PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	psh.SecurityHeaders(w)
 
 	Id, err := strconv.Atoi(r.PathValue("Id"))
 	if err != nil {
@@ -57,6 +87,7 @@ func (psh PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (psh PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.Request) {
+	psh.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/article/create_article.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -67,6 +98,7 @@ func (psh PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.R
 
 func (psh PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	psh.SecurityHeaders(w)
 
 	var article models.Article
 	err := json.NewDecoder(r.Body).Decode(&article)
@@ -91,6 +123,7 @@ func (psh PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Reque
 
 func (psh PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	psh.SecurityHeaders(w)
 
 	var article models.Article
 	err := json.NewDecoder(r.Body).Decode(&article)
@@ -120,6 +153,7 @@ func (psh PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Reque
 
 func (psh PostHandler) DeleteArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	psh.SecurityHeaders(w)
 
 	var article models.Article
 	err := json.NewDecoder(r.Body).Decode(&article)

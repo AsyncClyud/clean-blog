@@ -17,7 +17,15 @@ func NewUserHandler(service service.AuthService) *UserHandler {
 	return &UserHandler{authService: service}
 }
 
+func (ush UserHandler) SecurityHeaders(w http.ResponseWriter) {
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+	w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+	w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+}
+
 func (ush *UserHandler) ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
+	ush.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/profile/profile.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -28,6 +36,7 @@ func (ush *UserHandler) ProfilePageHandler(w http.ResponseWriter, r *http.Reques
 
 func (ush *UserHandler) ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	ush.SecurityHeaders(w)
 
 	userID, ok := r.Context().Value(contextutil.UserIDKey).(int)
 	if !ok {
@@ -50,6 +59,7 @@ func (ush *UserHandler) ProfileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ush *UserHandler) RegisterPageHandler(w http.ResponseWriter, r *http.Request) {
+	ush.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/auth/register.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -59,6 +69,7 @@ func (ush *UserHandler) RegisterPageHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (ush *UserHandler) LoginPageHandler(w http.ResponseWriter, r *http.Request) {
+	ush.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/auth/login.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -69,6 +80,7 @@ func (ush *UserHandler) LoginPageHandler(w http.ResponseWriter, r *http.Request)
 
 func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	ush.SecurityHeaders(w)
 
 	var user models.User
 	error_decode := json.NewDecoder(r.Body).Decode(&user)
@@ -88,6 +100,7 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 
 func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	ush.SecurityHeaders(w)
 
 	var user models.User
 	error_decode := json.NewDecoder(r.Body).Decode(&user)
@@ -108,6 +121,7 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func (ush *UserHandler) GetArticleAuthorHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
+	ush.SecurityHeaders(w)
 
 	cookie, exist := r.Cookie("jwt-token")
 	if exist != nil {
