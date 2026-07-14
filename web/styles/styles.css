@@ -1,3 +1,9 @@
+@media (max-width: 600px) {
+    .main, .articles {
+        width: 90vw;
+    }
+}
+
 body {
     background: #212830;
     display: grid;
@@ -19,6 +25,7 @@ body {
     }
     a {
         color: gainsboro;
+        margin: 5px;
     }
 }
 

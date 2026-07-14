@@ -1,3 +1,9 @@
+@media (max-width: 600px) {
+    .main, .profile {
+        width: 90vw;
+    }
+}
+
 body {
     background: #212830;
     display: grid;
@@ -19,6 +25,7 @@ body {
     }
     a {
         color: gainsboro;
+        margin: 5px;
     }
 }
 
@@ -31,15 +38,19 @@ body {
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
     input {
+        box-sizing: border-box;
+        width: 90%;
         font-family: 'JetBrains Mono', monospace;
         border-radius: 5px;
     }
     textarea {
+        box-sizing: border-box;
         resize: none;
+        width: 70%
     }
     button {
         font-family: 'JetBrains Mono', monospace;
-        height: vh;
+        height: 5vh;
         width: 5vw;
         margin: 10px;
         border-radius: 10px;
