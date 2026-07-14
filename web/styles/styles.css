@@ -16,6 +16,9 @@ body {
     h1 {
         margin: 0;
     }
+    a {
+        margin-right: 12px;
+    }
 }
 
 .main {
