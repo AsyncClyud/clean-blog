@@ -16,10 +16,10 @@ async function Fetch_Article() {
     const article = JSON.parse(await response.json());
     const main_element = document.getElementById("main");
     const article_element = document.createElement("div");
-    article_element.setAttribute("class", "article");
+    article_element.setAttribute("class", "articles");
     article_element.setAttribute("id", Id);
     article_element.innerHTML = `
-    <h3 id = "title">${article.Title}<h3>
+    <h3 id = "title">${article.Title}</h3>
     <p id ="content">${article.Content}</p>
     <p id="created_at">${article.Created_at}</p>
     <p>Article Author ID:</p>

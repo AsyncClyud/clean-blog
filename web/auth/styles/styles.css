@@ -1,6 +1,5 @@
 body {
-    background: #92c3d6;
-    background: radial-gradient(circle, rgba(146, 195, 214, 1) 0%, rgba(180, 250, 250, 1) 50%, rgba(255, 255, 255, 1) 100%);
+    background: #212830;
     display: grid;
     grid-template-rows: auto 1fr auto;
     margin: 0;
@@ -9,12 +8,16 @@ body {
 }
 
 .header {
-    height: 105px;
+    background-color: #151b23;
+    height: 8vh;
     width: auto;
-    background-color: #92c3d6;
     grid-row: 1;
     h1 {
+        color: #d1d7e0;
         margin: 0;
+    }
+    a {
+        color: gainsboro;
     }
 }
 
@@ -22,26 +25,45 @@ body {
     display: grid;
     margin-left: auto;
     margin-right: auto;
-    width: 600px;
+    width: 60vw;
+    color: #d1d7e0;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
     input {
         font-family: 'JetBrains Mono', monospace;
+        border-radius: 5px;
     }
     button {
         font-family: 'JetBrains Mono', monospace;
-        height: 30px;
-        width: 70px;
-        border-radius: 5px;
+        height: 3vh;
+        width: 5vw;
+        margin: 10px;
+        border-radius: 10px;
     }
     grid-template-rows: auto auto auto auto;
     justify-items: center;
     align-content: center;
     justify-content: center;
 }
+
+.auth {
+    height: 20vh;
+    width: 15vw;
+    background-color: #212121;
+    border-radius: 5px;
+}
+
 .footer {
-    height: 90px;
+    height: 8vh;
     width: auto;
-    background-color: grey;
+    background-color: #212830;
+    outline: 3px;
+    outline-color: #151b23;
+    outline-style: solid;
     grid-row: 3;
+    text-align: center;
+    a {
+        margin: 5px;
+        color: gainsboro;
+    }
 }

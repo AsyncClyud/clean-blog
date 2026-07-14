@@ -1,42 +1,48 @@
 body {
-    background: #92c3d6;
-    background: radial-gradient(circle, rgba(146, 195, 214, 1) 0%, rgba(180, 250, 250, 1) 50%, rgba(255, 255, 255, 1) 100%);
+    background: #212830;
     display: grid;
     grid-template-rows: auto 1fr auto;
     margin: 0;
     min-height: 100vh;
+
     font-family: 'JetBrains Mono', monospace;
 }
 
 .header {
-    height: 105px;
+    background-color: #151b23;
+    height: 8vh;
     width: auto;
-    background-color: #92c3d6;
     grid-row: 1;
     h1 {
+        color: #d1d7e0;
         margin: 0;
+    }
+    a {
+        color: gainsboro;
     }
 }
 
 .main {
-    background-color: #B4FAFA;
+    display: grid;
     margin-left: auto;
     margin-right: auto;
-    width: 600px;
-    padding: 10px;
+    width: 60vw;
+    color: #d1d7e0;
     text-align: center;
-    textarea {
-        font-family: 'JetBrains Mono', monospace;
-        resize: none;
-        margin: 10px;
-    }
+    font-family: 'JetBrains Mono', monospace;
     input {
         font-family: 'JetBrains Mono', monospace;
+        border-radius: 5px;
+    }
+    textarea {
+        resize: none;
     }
     button {
         font-family: 'JetBrains Mono', monospace;
+        height: vh;
+        width: 5vw;
         margin: 10px;
-        border-radius: 5px;
+        border-radius: 10px;
     }
     grid-template-rows: auto auto auto auto;
     justify-items: center;
@@ -44,9 +50,31 @@ body {
     justify-content: center;
 }
 
+.profile {
+    height: fit-content;
+    width: 30vw;
+    background-color: #212121;
+    border-radius: 5px;
+}
+
+.settings {
+    height: fit-content;
+    width: 40vw;
+    background-color: #212121;
+    border-radius: 5px;
+}
+
 .footer {
-    height: 90px;
+    height: 8vh;
     width: auto;
-    background-color: grey;
+    background-color: #212830;
+    outline: 3px;
+    outline-color: #151b23;
+    outline-style: solid;
     grid-row: 3;
+    text-align: center;
+    a {
+        margin: 5px;
+        color: gainsboro;
+    }
 }

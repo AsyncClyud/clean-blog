@@ -7,7 +7,7 @@ async function Fetch_Articles() {
   });
   if (response.ok) {
     const data = JSON.parse(await response.json());
-    const main_element = document.getElementById("main");
+    const articles_element = document.getElementById("articles");
     data.forEach((article) => {
       const link = document.createElement("a");
       link.href = `/article/${article.Id}`;
@@ -16,7 +16,7 @@ async function Fetch_Articles() {
       const div = document.createElement("div");
       div.appendChild(link);
 
-      main_element.appendChild(div);
+      articles_element.appendChild(div);
     });
   }
 }
