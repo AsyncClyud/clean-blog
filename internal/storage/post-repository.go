@@ -21,7 +21,7 @@ func NewPostRepo(db *sql.DB) *PostRepository {
 func (pr *PostRepository) GetAllArticles() (all_articles string) {
 	articles := []models.Article{}
 
-	rows, err := pr.db.Query("SELECT * FROM posts")
+	rows, err := pr.db.Query("SELECT Id, Title FROM posts")
 	if err != nil {
 		rows.Err()
 	}
@@ -29,7 +29,7 @@ func (pr *PostRepository) GetAllArticles() (all_articles string) {
 
 	for rows.Next() {
 		article := models.Article{}
-		err := rows.Scan(&article.Id, &article.Title, &article.Content, &article.Created_at, &article.Author)
+		err := rows.Scan(&article.Id, &article.Title)
 		if err != nil {
 			log.Println(err)
 		}
@@ -45,24 +45,22 @@ func (pr *PostRepository) GetAllArticles() (all_articles string) {
 
 }
 
-func (pr *PostRepository) GetArticleById(Id int) (article string) {
-	articles := []models.Article{}
+func (pr *PostRepository) GetArticleById(Id int) (byid_article string) {
+	var article models.Article
 
-	rows, err := pr.db.Query("SELECT * FROM posts WHERE Id = $1", Id)
+	rows, err := pr.db.Query("SELECT Title, Content, Created_At, Author FROM posts WHERE Id = $1", Id)
 	if err != nil {
 		rows.Err()
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		article := models.Article{}
-		err := rows.Scan(&article.Id, &article.Title, &article.Content, &article.Created_at, &article.Author)
+		err := rows.Scan(&article.Title, &article.Content, &article.Created_at, &article.Author)
 		if err != nil {
 			log.Println(err)
 		}
-		articles = append(articles, article)
 	}
-	result, err := json.MarshalIndent(articles, "", " ")
+	result, err := json.MarshalIndent(article, "", " ")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -92,7 +90,6 @@ func (pr *PostRepository) UpdateArticle(article models.Article) sql.Result {
 }
 
 func (pr *PostRepository) DeleteArticle(article models.Article) sql.Result {
-	log.Println(article)
 	result, err := pr.db.Exec("DELETE FROM Posts WHERE Id = $1", article.Id)
 	if err != nil {
 		log.Fatalln("Delete query error:", err)

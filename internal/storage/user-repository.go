@@ -43,6 +43,47 @@ func (ur *UserRepository) CheckIfUserExist(User models.User) (user_id int, hashe
 
 }
 
+func (ur *UserRepository) GetUserInfo(user_id int) (user_info string, err error) {
+	rows, err := ur.db.Query("SELECT Username, Bio, Created_at FROM Users WHERE Id = $1", user_id)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer rows.Close()
+
+	var user models.User
+	for rows.Next() {
+		err := rows.Scan(&user.Username, &user.Bio, &user.Created_at)
+		if err != nil {
+			log.Fatalln(err)
+			rows.Err()
+		}
+	}
+	result, err := json.MarshalIndent(user, "", " ")
+	if err != nil {
+		log.Fatalln(err)
+		return "", fmt.Errorf("Error: %v", err)
+	}
+
+	return string(result), nil
+}
+
+func (ur *UserRepository) GetUserPassword(user_id int) (hashed_password string, err error) {
+	var user models.User
+	rows, err := ur.db.Query("SELECT Password FROM users WHERE Id = $1", user_id)
+	if err != nil {
+		return "", rows.Err()
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&user.Password)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+	return user.Password, nil
+}
+
 func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success bool) {
 	_, _, UserExist := ur.CheckIfUserExist(new_user)
 	var user models.User
@@ -70,26 +111,36 @@ func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success
 	}
 	return user.Id, true
 }
-func (ur *UserRepository) GetUserInfo(user_id int) (user_info string, err error) {
-	rows, err := ur.db.Query("SELECT Id, Username, Bio, Created_at FROM Users WHERE Id = $1", user_id)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer rows.Close()
 
-	var user models.User
-	for rows.Next() {
-		err := rows.Scan(&user.Id, &user.Username, &user.Bio, &user.Created_at)
+func (ur *UserRepository) UpdateUsername(user models.User, user_id int) (success bool) {
+	_, _, UsernameExist := ur.CheckIfUserExist(user)
+	if !UsernameExist {
+		_, err := ur.db.Exec("UPDATE Users SET Username = $1 WHERE Id = $2", user.Username, user_id)
 		if err != nil {
-			log.Fatalln(err)
-			rows.Err()
+			log.Printf("User Query error: %v", err)
+			return false
 		}
+		return true
 	}
-	result, err := json.MarshalIndent(user, "", " ")
+	return false
+}
+
+func (ur *UserRepository) UpdateBio(user models.User, user_id int) (success bool) {
+	_, err := ur.db.Exec("UPDATE Users SET Bio = $1 WHERE Id = $2", user.Bio, user_id)
 	if err != nil {
-		log.Fatalln(err)
-		return "", fmt.Errorf("Error: %v", err)
+		log.Printf("User Query error: %v", err)
+		return false
 	}
 
-	return string(result), nil
+	return true
+}
+
+func (ur *UserRepository) UpdatePassword(new_password string, user_id int) (success bool) {
+	_, err := ur.db.Exec("UPDATE Users SET Password = $1 WHERE Id = $2", new_password, user_id)
+	if err != nil {
+		log.Printf("User Query error: %v", err)
+		return false
+	}
+
+	return true
 }
