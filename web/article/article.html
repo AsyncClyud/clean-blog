@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-title" content="Clean Blog" />
     <link rel="manifest" href="/icons/site.webmanifest" />
     <script src="scripts/requests.js"></script>
+    <script type="module" src="scripts/modules/is_auth.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -21,16 +22,12 @@
     <header class="header" id="header">
         <h1>Clean Blog</h1>
         <a href="/">Main</a>
-        <a href="/auth/login">Login</a>
-        <a href="/auth/register">Register</a>
-        <a href="/article/create">Create article</a>
-        <a href="/profile">Profile</a>
     </header>
     <main class="main" id="main"></main>
     <footer class="footer" id="footer">
         <a href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
-        <a href="privacy">Privacy Policy</a>
-        <a href="terms">Terms of service</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of service</a>
     </footer>
     <script>
     Fetch_Article()

@@ -13,22 +13,21 @@ async function Fetch_Article() {
     headers: { Accept: "application/json" },
   });
   if (response.ok) {
-    const data = JSON.parse(await response.json());
+    const article = JSON.parse(await response.json());
     const main_element = document.getElementById("main");
-    data.forEach((article) => {
-      const article_element = document.createElement("div");
-      article_element.setAttribute("class", "article");
-      article_element.setAttribute("id", article.Id);
-      article_element.innerHTML = `
-      <h3 id = "title">${article.Title}<h3>
-      <p id ="content">${article.Content}</p>
-      <p id="created_at">${article.Created_at}</p>
-      <p>Article Author ID:</p>
-      <p id="author_id">${article.Author}</p>
-      `;
-      main_element.appendChild(article_element);
-      document.title = article.Title
-    });
+    const article_element = document.createElement("div");
+    article_element.setAttribute("class", "article");
+    article_element.setAttribute("id", Id);
+    article_element.innerHTML = `
+    <h3 id = "title">${article.Title}<h3>
+    <p id ="content">${article.Content}</p>
+    <p id="created_at">${article.Created_at}</p>
+    <p>Article Author ID:</p>
+    <p id="author_id">${article.Author}</p>
+    `;
+    main_element.appendChild(article_element);
+    document.title = article.Title
+
     await GetArticleAuthor()
   }
 }
