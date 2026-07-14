@@ -25,6 +25,23 @@ body {
     width: 600px;
     padding: 10px;
     text-align: center;
+    textarea {
+        font-family: 'JetBrains Mono', monospace;
+        resize: none;
+        margin: 10px;
+    }
+    input {
+        font-family: 'JetBrains Mono', monospace;
+    }
+    button {
+        font-family: 'JetBrains Mono', monospace;
+        margin: 10px;
+        border-radius: 5px;
+    }
+    grid-template-rows: auto auto auto auto;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
 }
 
 .footer {
