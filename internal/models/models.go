@@ -19,3 +19,8 @@ type User struct {
 type Message struct {
 	Message string `json:"Message"`
 }
+
+type NewPassword struct {
+	Old_Password string `json:"Old_Password"`
+	New_Password string `json:"New_Password"`
+}
