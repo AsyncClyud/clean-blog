@@ -5,7 +5,6 @@ import (
 	"blog/internal/models"
 	"blog/internal/storage"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -78,7 +77,7 @@ func (ur *AuthService) SetTokenInCookie(w http.ResponseWriter, id int) {
 		Name:     "jwt-token",
 		Value:    jwt_token,
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 		MaxAge:   3200 * 20,
@@ -107,9 +106,6 @@ func (ur *AuthService) Register(user models.User) (status_code, id int) {
 	if ur.ValidateUserData(user) == 400 {
 		return http.StatusNotAcceptable, 0
 	}
-	if ur.ValidateUserData(user) == 406 {
-		return http.StatusNotAcceptable, 0
-	}
 	hashed_password, err := ur.HashPassword(user.Password)
 	if err != nil {
 		return http.StatusBadGateway, 0
@@ -120,7 +116,6 @@ func (ur *AuthService) Register(user models.User) (status_code, id int) {
 	if !message {
 		return http.StatusBadRequest, 0
 	}
-	log.Println(id)
 	return http.StatusOK, id
 }
 
@@ -139,4 +134,43 @@ func (ur *AuthService) Login(user models.User) (status_code, id int) {
 		return http.StatusNotFound, 0
 	}
 	return http.StatusOK, id
+}
+
+func (ur *AuthService) ChangeUsername(user models.User, user_id int) (status_code int) {
+	if len(user.Username) <= 2{
+		return http.StatusBadRequest
+	}
+
+	message := ur.repo.UpdateUsername(user, user_id)
+	if !message {
+		return http.StatusConflict
+	}
+	return http.StatusOK
+
+}
+
+func (ur *AuthService) ChangeBio(user models.User, user_id int) (status_code int) {
+	message := ur.repo.UpdateBio(user, user_id)
+	if !message {
+		return http.StatusBadGateway
+	}
+
+	return http.StatusOK
+
+}
+
+func (ur *AuthService) ChangePassword(password models.NewPassword, user_id int) (status_code int) {
+	hashed_password, _ := ur.repo.GetUserPassword(user_id)
+	if ur.CheckPaswordHash(password.Old_Password, hashed_password) != nil {
+		return http.StatusBadRequest
+	}
+	hashed_password, err := ur.HashPassword(password.New_Password)
+	if err != nil {
+		return http.StatusBadGateway
+	}
+	message := ur.repo.UpdatePassword(hashed_password, user_id)
+	if !message {
+		return http.StatusBadRequest
+	}
+	return http.StatusOK
 }
