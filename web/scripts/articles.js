@@ -10,7 +10,7 @@ async function Fetch_Articles() {
     const main_element = document.getElementById("main");
     data.forEach((article) => {
       const link = document.createElement("a");
-      link.href = `article/${article.Id}`;
+      link.href = `/article/${article.Id}`;
       link.textContent = article.Title;
 
       const div = document.createElement("div");
@@ -20,3 +20,5 @@ async function Fetch_Articles() {
     });
   }
 }
+
+export default Fetch_Articles()
