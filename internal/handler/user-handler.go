@@ -17,49 +17,26 @@ func NewUserHandler(service service.AuthService) *UserHandler {
 	return &UserHandler{authService: service}
 }
 
-func (ush UserHandler) SecurityHeaders(w http.ResponseWriter) {
-	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-	w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-	w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-}
-
-func (ush *UserHandler) ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
-	ush.SecurityHeaders(w)
-	tmpl, err := template.ParseFiles("web/profile/profile.html")
-	if err != nil {
-		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
-		return
-	}
-	tmpl.Execute(w, nil)
-}
-
-func (ush *UserHandler) ProfileHandler(w http.ResponseWriter, r *http.Request) {
+func (ush *UserHandler) IsAuth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	ush.SecurityHeaders(w)
 
-	userID, ok := r.Context().Value(contextutil.UserIDKey).(int)
-	if !ok {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	user, status_code := ush.authService.FetchUser(userID)
-	if status_code != http.StatusOK {
-		http.Error(w, "Internal error", http.StatusBadGateway)
-		return
-	}
-
-	err := json.NewEncoder(w).Encode(user)
+	cookie, err := r.Cookie("jwt-token")
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusBadGateway)
-		return
+   		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
+     	return
 	}
-
+	token, err := ush.authService.Validate_Token(cookie.Value)
+	if err != nil {
+   		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
+     	return
+	}
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"authorized": true,
+		"userID": token,
+	})
 }
 
 func (ush *UserHandler) RegisterPageHandler(w http.ResponseWriter, r *http.Request) {
-	ush.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/auth/register.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -69,7 +46,6 @@ func (ush *UserHandler) RegisterPageHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (ush *UserHandler) LoginPageHandler(w http.ResponseWriter, r *http.Request) {
-	ush.SecurityHeaders(w)
 	tmpl, err := template.ParseFiles("web/auth/login.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -80,7 +56,6 @@ func (ush *UserHandler) LoginPageHandler(w http.ResponseWriter, r *http.Request)
 
 func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
-	ush.SecurityHeaders(w)
 
 	var user models.User
 	error_decode := json.NewDecoder(r.Body).Decode(&user)
@@ -100,7 +75,6 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 
 func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
-	ush.SecurityHeaders(w)
 
 	var user models.User
 	error_decode := json.NewDecoder(r.Body).Decode(&user)
@@ -119,9 +93,120 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (ush *UserHandler) ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("web/profile/profile.html")
+	if err != nil {
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+
+func (ush *UserHandler) ProfileHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	userID, ok := r.Context().Value(contextutil.UserIDKey).(int)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	user, status_code := ush.authService.FetchUser(userID)
+	if status_code != http.StatusOK {
+		http.Error(w, "Internal error", http.StatusBadGateway)
+		return
+	}
+
+	err := json.NewEncoder(w).Encode(user)
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+		return
+	}
+
+}
+
+func (ush *UserHandler) SettingsPageHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("web/profile/settings.html")
+	if err != nil {
+			http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+	}
+	tmpl.Execute(w, nil)
+}
+
+func (ush *UserHandler) ChangeUsernameHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Accept", "application/json")
+
+	var user models.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+	}
+
+	cookie, exist := r.Cookie("jwt-token")
+	if exist != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, validation_err := ush.authService.Validate_Token(cookie.Value)
+	if validation_err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	status_code := ush.authService.ChangeUsername(user, claims)
+	ResponseUsernameChange(status_code, w, r)
+}
+
+func (ush *UserHandler) ChangeBioHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Accept", "application/json")
+
+	var user models.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+	}
+
+	cookie, exist := r.Cookie("jwt-token")
+	if exist != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, validation_err := ush.authService.Validate_Token(cookie.Value)
+	if validation_err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	status_code := ush.authService.ChangeBio(user, claims)
+	ResponseBioChange(status_code, w, r)
+}
+
+func (ush *UserHandler) ChangePasswordHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Accept", "application/json")
+
+	var passwords models.NewPassword
+	err := json.NewDecoder(r.Body).Decode(&passwords)
+	if err != nil {
+		http.Error(w, "Invalid body", http.StatusBadRequest)
+	}
+
+	cookie, exist := r.Cookie("jwt-token")
+	if exist != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	claims, validation_err := ush.authService.Validate_Token(cookie.Value)
+	if validation_err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	status_code := ush.authService.ChangePassword(passwords, claims)
+	ResponsePasswordChange(status_code, w, r)
+}
+
 func (ush *UserHandler) GetArticleAuthorHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
-	ush.SecurityHeaders(w)
 
 	cookie, exist := r.Cookie("jwt-token")
 	if exist != nil {

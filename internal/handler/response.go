@@ -55,3 +55,32 @@ func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
 		FormatIntoJson("You don't have permission to delete/edit this article!", w)
 	}
 }
+
+func ResponseUsernameChange(status_code int, w http.ResponseWriter, r *http.Request) {
+	switch {
+		case status_code == 200:
+			FormatIntoJson("Your username has been updated!", w)
+		case status_code == 400:
+			FormatIntoJson("Username is too short!", w)
+		case status_code == 409:
+			FormatIntoJson("Username is already in use!", w)
+	}
+}
+
+func ResponseBioChange(status_code int, w http.ResponseWriter, r *http.Request) {
+	switch {
+		case status_code == 200:
+			FormatIntoJson("Your bio has been updated!", w)
+		case status_code == 502:
+			FormatIntoJson("Server error!", w)
+	}
+}
+
+func ResponsePasswordChange(status_code int, w http.ResponseWriter, r *http.Request) {
+	switch {
+		case status_code == 200:
+			FormatIntoJson("Password has been updated!", w)
+		case status_code == 400:
+			FormatIntoJson("Incorrect password!", w)
+	}
+}
