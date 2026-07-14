@@ -50,7 +50,7 @@ body {
 
 .articles {
     height: fit-content;
-    width: 30vw;
+    width: 50vw;
     background-color: #212121;
     padding: 20px;
     a {
