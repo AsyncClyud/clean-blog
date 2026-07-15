@@ -22,17 +22,17 @@ func (ush *UserHandler) IsAuth(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("jwt-token")
 	if err != nil {
-   		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
-     	return
+		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
+		return
 	}
 	token, err := ush.authService.Validate_Token(cookie.Value)
 	if err != nil {
-   		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
-     	return
+		json.NewEncoder(w).Encode(map[string]bool{"authorized": false})
+		return
 	}
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"authorized": true,
-		"userID": token,
+		"userID":     token,
 	})
 }
 
@@ -93,8 +93,17 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (ush *UserHandler) ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("web/profile/profile.html")
+func (ush *UserHandler) MainProfilePageHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("web/profile/main_profile.html")
+	if err != nil {
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+
+func (ush *UserHandler) UserProfilePageHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("web/profile/user_profile.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
 		return
@@ -128,7 +137,7 @@ func (ush *UserHandler) ProfileHandler(w http.ResponseWriter, r *http.Request) {
 func (ush *UserHandler) SettingsPageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("web/profile/settings.html")
 	if err != nil {
-			http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
 	}
 	tmpl.Execute(w, nil)
 }
@@ -228,5 +237,4 @@ func (ush *UserHandler) GetArticleAuthorHandler(w http.ResponseWriter, r *http.R
 	if claims != author.Author {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	}
-
 }

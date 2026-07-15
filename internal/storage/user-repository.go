@@ -90,19 +90,19 @@ func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success
 	if !UserExist {
 		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Created_at) VALUES($1, $2, $3)", new_user.Username, new_user.Password, time.Now())
 		if err != nil {
-			log.Println(err)
+			log.Printf("User Query error: %v", err)
 			return 0, false
 		}
 		rows, err := ur.db.Query("SELECT Id FROM Users WHERE Username = $1", new_user.Username)
 		if err != nil {
-			rows.Err()
+			log.Printf("User Query error: %v", rows.Err())
 			return 0, false
 		}
 		defer rows.Close()
 		for rows.Next() {
 			err := rows.Scan(&user.Id)
 			if err != nil {
-				log.Println("Rows scan error:", err)
+				log.Printf("Rows scan error: %v", err)
 				return 0, false
 			}
 		}

@@ -137,7 +137,7 @@ func (ur *AuthService) Login(user models.User) (status_code, id int) {
 }
 
 func (ur *AuthService) ChangeUsername(user models.User, user_id int) (status_code int) {
-	if len(user.Username) <= 2{
+	if len(user.Username) <= 2 {
 		return http.StatusBadRequest
 	}
 

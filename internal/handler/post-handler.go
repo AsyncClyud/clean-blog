@@ -18,7 +18,7 @@ func NewPostHandler(postservice service.PostService, auth service.AuthService) *
 	return &PostHandler{postService: postservice, authService: auth}
 }
 
-func (psh PostHandler) PrivacyPageHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) PrivacyPageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("web/privacy.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -27,7 +27,7 @@ func (psh PostHandler) PrivacyPageHandler(w http.ResponseWriter, r *http.Request
 	tmpl.Execute(w, nil)
 }
 
-func (psh PostHandler) TermsPageHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) TermsPageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("web/terms.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -36,7 +36,7 @@ func (psh PostHandler) TermsPageHandler(w http.ResponseWriter, r *http.Request) 
 	tmpl.Execute(w, nil)
 }
 
-func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("web/article/article.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -45,7 +45,7 @@ func (psh PostHandler) ArticlePageHandler(w http.ResponseWriter, r *http.Request
 	tmpl.Execute(w, nil)
 }
 
-func (psh PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	articles := psh.postService.GetArticles()
@@ -57,7 +57,7 @@ func (psh PostHandler) GetArticlesHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (psh PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	Id, err := strconv.Atoi(r.PathValue("Id"))
@@ -74,7 +74,7 @@ func (psh PostHandler) GetArticleByIdHandler(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-func (psh PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("web/article/create_article.html")
 	if err != nil {
 		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
@@ -83,7 +83,16 @@ func (psh PostHandler) CreateArticlePageHandler(w http.ResponseWriter, r *http.R
 	tmpl.Execute(w, nil)
 }
 
-func (psh PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) UpdateArticlePageHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("web/article/update_article.html")
+	if err != nil {
+		http.Error(w, "Invalid HTML file", http.StatusBadGateway)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+
+func (psh *PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
 	var article models.Article
@@ -107,7 +116,7 @@ func (psh PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
-func (psh PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
 	var article models.Article
@@ -136,7 +145,7 @@ func (psh PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
-func (psh PostHandler) DeleteArticleHandler(w http.ResponseWriter, r *http.Request) {
+func (psh *PostHandler) DeleteArticleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
 	var article models.Article

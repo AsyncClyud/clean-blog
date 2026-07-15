@@ -48,7 +48,7 @@ func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
 func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
 	case status_code == 200:
-		FormatIntoJson("Article has been created!", w)
+		FormatIntoJson("Success!", w)
 	case status_code == 400:
 		FormatIntoJson("Article's title or content too short!", w)
 	case status_code == 403:
@@ -58,29 +58,29 @@ func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
 
 func ResponseUsernameChange(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
-		case status_code == 200:
-			FormatIntoJson("Your username has been updated!", w)
-		case status_code == 400:
-			FormatIntoJson("Username is too short!", w)
-		case status_code == 409:
-			FormatIntoJson("Username is already in use!", w)
+	case status_code == 200:
+		FormatIntoJson("Your username has been updated!", w)
+	case status_code == 400:
+		FormatIntoJson("Username is too short!", w)
+	case status_code == 409:
+		FormatIntoJson("Username is already in use!", w)
 	}
 }
 
 func ResponseBioChange(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
-		case status_code == 200:
-			FormatIntoJson("Your bio has been updated!", w)
-		case status_code == 502:
-			FormatIntoJson("Server error!", w)
+	case status_code == 200:
+		FormatIntoJson("Your bio has been updated!", w)
+	case status_code == 502:
+		FormatIntoJson("Bio is too long! 2000 chars max!", w)
 	}
 }
 
 func ResponsePasswordChange(status_code int, w http.ResponseWriter, r *http.Request) {
 	switch {
-		case status_code == 200:
-			FormatIntoJson("Password has been updated!", w)
-		case status_code == 400:
-			FormatIntoJson("Incorrect password!", w)
+	case status_code == 200:
+		FormatIntoJson("Password has been updated!", w)
+	case status_code == 400:
+		FormatIntoJson("Incorrect password!", w)
 	}
 }
