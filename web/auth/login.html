@@ -11,7 +11,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Clean Blog" />
 	<link rel="manifest" href="/icons/site.webmanifest" />
-	<link rel="stylesheet" href="styles/styles.css">
+	<link rel="stylesheet" href="/auth/styles/styles.css">
 	<script src="scripts/login.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,7 @@
             <h3>Password</h3>
             <input type="password" id="password"> <br>
             <button type="button" onclick="SendLoginRequest()">login</button>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u"></div>
         <p id="status"></p>
         </div>
     </main>
@@ -40,5 +41,7 @@
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms of service</a>
     </footer>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

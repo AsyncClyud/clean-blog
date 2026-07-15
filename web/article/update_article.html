@@ -4,15 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Update Article</title>
-	<meta name="description" content="Article creation page">
+	<meta name="description" content="Article update page">
 	<link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
 	<link rel="shortcut icon" href="/icons/favicon.ico" />
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Clean Blog" />
     <link rel="manifest" href="/icons/site.webmanifest" />
-	<link rel="stylesheet" href="styles/styles.css">
-	<script src="scripts/requests.js"></script>
+	<link rel="stylesheet" href="/article/styles/styles.css">
+	<script src="/article/scripts/requests.js"></script>
+	<script type="module" src="/article/scripts/pages.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -24,17 +25,24 @@
         <a href="/profile">Profile</a>
     </header>
     <main class="main" id="main">
-        <h3>Title</h3>
-        <input type="text" id="title"> <br>
-        <h3>Content</h3>
-        <textarea id="content" rows="10" cols="40"></textarea>
-        <button type="button" onclick="SendUpdateRequest()">create</button>
-        <p id="status"></p>
+        <div class="articles" id="article">
+            <h3>Title</h3>
+            <p id="title"></p>
+            <input type="text" id="new_title"> <br>
+            <h3>Content</h3>
+            <textarea id="new_content" rows="10" cols="40"></textarea> <br>
+            <button type="button" onclick="SendUpdateRequest()">Update</button>
+            <p id="status"></p>
+            <p id="author">Article Author ID:</p>
+            <p id="author_id"></p>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u"></div>
+        </div>
     </main>
     <footer class="footer" id="footer">
         <a href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms of service</a>
     </footer>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

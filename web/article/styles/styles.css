@@ -33,22 +33,24 @@ body {
     display: grid;
     margin-left: auto;
     margin-right: auto;
-    width: 60vw;
+    width: 50vw;
     color: #d1d7e0;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
     input {
         box-sizing: border-box;
+        width: 50%;
         font-family: 'JetBrains Mono', monospace;
         border-radius: 5px;
     }
     textarea {
         box-sizing: border-box;
         resize: none;
+        width: 60%
     }
     button {
         font-family: 'JetBrains Mono', monospace;
-        height: vh;
+        height: 6vh;
         width: 5vw;
         margin: 10px;
         border-radius: 10px;
@@ -61,7 +63,7 @@ body {
 
 .articles {
     height: fit-content;
-    width: 30vw;
+    width: 55vw;
     background-color: #212121;
     border-radius: 5px;
 }

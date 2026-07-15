@@ -37,12 +37,12 @@ body {
     font-family: 'JetBrains Mono', monospace;
     input {
         font-family: 'JetBrains Mono', monospace;
-        width: 90%;
+        width: 50%;
         border-radius: 5px;
     }
     button {
         font-family: 'JetBrains Mono', monospace;
-        height: 3vh;
+        height: 4vh;
         width: 5vw;
         margin: 5px;
         border-radius: 10px;

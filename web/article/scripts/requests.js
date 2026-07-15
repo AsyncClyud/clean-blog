@@ -8,16 +8,16 @@ function GetPathValue() {
 }
 async function Fetch_Article() {
   const Id = GetPathValue()
-  const response = await fetch(`/api/articles/${Id}`, {
+  const article_request = await fetch(`/api/articles/${Id}`, {
     method: "GET",
     headers: { Accept: "application/json" },
   });
-  if (response.ok) {
-    const article = JSON.parse(await response.json());
+  if (article_request.ok) {
+    const article = JSON.parse(await article_request.json());
     const main_element = document.getElementById("main");
     const article_element = document.createElement("div");
     article_element.setAttribute("class", "articles");
-    article_element.setAttribute("id", Id);
+    article_element.setAttribute("id", "article");
     article_element.innerHTML = `
     <h3 id = "title">${article.Title}</h3>
     <p id ="content">${article.Content}</p>
@@ -35,24 +35,26 @@ async function Fetch_Article() {
 async function GetArticleAuthor() {
   const author_id = document.getElementById("author_id").textContent
 
-  const response = await fetch("/api/users", {
+  const article_author_request = await fetch("/api/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Author: Number(author_id)
       })
   })
-  if (response.ok) {
-    const main_element = document.getElementById("main")
+  if (article_author_request.ok) {
+    const article_id = GetPathValue()
+    const article_element = document.getElementById("article")
     const delete_button = document.createElement("button")
-//  const update_button = document.createElement("button")
+    const update_button = document.createElement("button")
 
     delete_button.textContent = `Delete article`
-    delete_button.setAttribute("onclick", "SendDeleteRequest()")
-//  update_button.textContent = `Update article`
+    delete_button.setAttribute("onclick", `SendDeleteRequest()`)
+    update_button.textContent = `Update article`
+    update_button.setAttribute("onclick", `UpdatePageRedirect(${article_id})`)
 
-    main_element.appendChild(delete_button)
-//  main_element.appendChild(update_button)
+    article_element.appendChild(delete_button)
+    article_element.appendChild(update_button)
   }
 }
 
@@ -60,7 +62,7 @@ async function SendCreateRequest() {
   const title = document.getElementById("title").value
   const content = document.getElementById("content").value
 
-  const response = await fetch("/api/articles", {
+  const create_request = await fetch("/api/articles", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -68,8 +70,8 @@ async function SendCreateRequest() {
       Content: content
       })
   })
-  if (response.ok) {
-    const message = JSON.parse(await response.json())
+  if (create_request.ok) {
+    const message = JSON.parse(await create_request.json())
     document.getElementById("status").textContent = message
   }
 }
@@ -78,7 +80,7 @@ async function SendDeleteRequest() {
   const article_id = GetPathValue()
   const author_id = document.getElementById("author_id").textContent
 
-  const response = await fetch("/api/articles", {
+  const delete_request = await fetch("/api/articles", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -86,7 +88,32 @@ async function SendDeleteRequest() {
       Author: Number(author_id)
     })
   })
-  if (response.ok) {
+  if (delete_request.ok) {
    document.location.replace("/")
   }
+}
+
+async function SendUpdateRequest() {
+  const new_title = document.getElementById("new_title").value
+  const new_content = document.getElementById("new_content").value
+  const author_id = document.getElementById("author_id").textContent
+
+  const update_request = await fetch("/api/articles", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      Id: Number(GetPathValue()),
+      Title: new_title,
+      Content: new_content,
+      Author: Number(author_id)
+    })
+  })
+  if (update_request.ok) {
+    const message = JSON.parse(await update_request.json())
+    document.getElementById("status").textContent = message
+ }
+}
+
+function UpdatePageRedirect(article_id) {
+  window.location.replace(`/article/update/${article_id}`)
 }
