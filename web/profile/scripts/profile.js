@@ -13,7 +13,7 @@ async function FetchUserProfile() {
     user_info.innerHTML = `
       <div class ="profile" id="profile">
       <img src="profile/images/avatar.jpg" alt="Avatar" width="200" height="200">
-      <h3>${data.Username}</h3>
+      <h3 id="username">${data.Username}</h3>
       <p>${data.Bio}</p>
       <p>${data.Created_at}</p>
       </div>

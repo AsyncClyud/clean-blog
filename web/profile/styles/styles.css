@@ -39,19 +39,19 @@ body {
     font-family: 'JetBrains Mono', monospace;
     input {
         box-sizing: border-box;
-        width: 90%;
+        width: 50%;
         font-family: 'JetBrains Mono', monospace;
         border-radius: 5px;
     }
     textarea {
         box-sizing: border-box;
         resize: none;
-        width: 70%
+        width: 60%
     }
     button {
         font-family: 'JetBrains Mono', monospace;
         height: 5vh;
-        width: 5vw;
+        width: 6vw;
         margin: 10px;
         border-radius: 10px;
     }

@@ -8,7 +8,10 @@ async function FetchUserInfo() {
   if (response.ok) {
     const data = JSON.parse(await response.json())
     document.getElementById("username").textContent = `${data.Username}`
-    document.getElementById("bio").textContent = `${data.Bio}`
+    document.getElementById("input_bio").textContent = `${data.Bio}`
+  } else {
+    document.getElementById("username").textContent = `Failed to fetch username`
+    document.getElementById("bio").textContent = `Failed to fetch username`
   }
 }
 
@@ -23,8 +26,8 @@ async function SendUpdateUsernameRequest() {
 
   })
   if (response.ok) {
-    const data = JSON.parse(await response.json())
-    document.getElementById("message_username").textContent = data
+    const message = JSON.parse(await response.json())
+    document.getElementById("message_username").textContent = message
   }
 }
 
@@ -39,8 +42,8 @@ async function SendUpdateBioRequest() {
 
   })
   if (response.ok) {
-    const data = JSON.parse(await response.json())
-    document.getElementById("message_bio").textContent = data
+    const message = JSON.parse(await response.json())
+    document.getElementById("message_bio").textContent = message
   }
 }
 
@@ -57,7 +60,7 @@ async function SendUpdatePasswordRequest() {
 
   })
   if (response.ok) {
-    const data = JSON.parse(await response.json())
-    document.getElementById("message_password").textContent = data
+    const message = JSON.parse(await response.json())
+    document.getElementById("message_password").textContent = message
   }
 }
