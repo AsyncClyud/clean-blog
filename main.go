@@ -9,6 +9,7 @@ import (
 	"blog/internal/storage"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -21,7 +22,7 @@ func main() {
 
 	cfg := config.Load()
 
-	db := storage.ConnectDataBase(cfg.DSN())
+	db := storage.ConnectDataBase(os.Getenv("DATABASE_URL"))
 	defer db.Close()
 
 	postDB := storage.NewPostRepo(db)
