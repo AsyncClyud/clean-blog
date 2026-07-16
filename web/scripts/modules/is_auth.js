@@ -1,3 +1,5 @@
+"use strict";
+
 async function Auth() {
   const response = await fetch("/api/auth", {
     method: "GET",
@@ -11,8 +13,16 @@ async function Auth() {
       const profile = document.createElement("a")
       profile.href = `/profile`
       profile.textContent = `Profile`
+      const create_article = document.createElement("a")
+      create_article.href = `/article/create`
+      create_article.textContent = `Create article`
+      const logout = document.createElement("button")
+      logout.setAttribute("onclick", "Logout()")
+      logout.textContent = `Logout`
 
       header_element.appendChild(profile)
+      header_element.appendChild(create_article)
+      header_element.appendChild(logout)
     }
     else {
       const header_element = document.getElementById("header")

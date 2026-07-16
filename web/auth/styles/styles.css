@@ -25,6 +25,11 @@ body {
         margin: 5px;
         color: gainsboro;
     }
+    button {
+        position: fixed;
+        right: 0;
+        margin-right: 10px;
+    }
 }
 
 .main {

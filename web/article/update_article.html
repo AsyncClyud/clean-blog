@@ -12,6 +12,7 @@
 	<meta name="apple-mobile-web-app-title" content="Clean Blog" />
     <link rel="manifest" href="/icons/site.webmanifest" />
 	<link rel="stylesheet" href="/article/styles/styles.css">
+	<script src="/article/scripts/logout.js"></script>
 	<script src="/article/scripts/requests.js"></script>
 	<script type="module" src="/article/scripts/pages.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +24,7 @@
         <h1>Clean Blog</h1>
         <a href="/">Main</a>
         <a href="/profile">Profile</a>
+        <button type="button", onclick="Logout()">Logout</button>
     </header>
     <main class="main" id="main">
         <div class="articles" id="article">
@@ -32,10 +34,10 @@
             <h3>Content</h3>
             <textarea id="new_content" rows="10" cols="40"></textarea> <br>
             <button type="button" onclick="SendUpdateRequest()">Update</button>
-            <p id="status"></p>
             <p id="author">Article Author ID:</p>
             <p id="author_id"></p>
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u"></div>
+            <p id="status"></p>
         </div>
     </main>
     <footer class="footer" id="footer">

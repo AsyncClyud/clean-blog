@@ -1,3 +1,5 @@
+"use strict";
+
 function GetPathValue() {
   var URL = (window.location.pathname)
   var LastIndexURL = URL.substring(0, URL.length - 1).lastIndexOf("/")

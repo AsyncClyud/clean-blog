@@ -61,17 +61,23 @@ async function GetArticleAuthor() {
 async function SendCreateRequest() {
   const title = document.getElementById("title").value
   const content = document.getElementById("content").value
+  const turnstile_token = turnstile.getResponse()
 
   const create_request = await fetch("/api/articles", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Title: title,
-      Content: content
+      Content: content,
+      Turnstile_token: turnstile_token
       })
   })
   if (create_request.ok) {
     const message = JSON.parse(await create_request.json())
+    if (message != "Success!") {
+      turnstile.reset()
+      document.getElementById("status").textContent = message
+    }
     document.getElementById("status").textContent = message
   }
 }
@@ -97,6 +103,7 @@ async function SendUpdateRequest() {
   const new_title = document.getElementById("new_title").value
   const new_content = document.getElementById("new_content").value
   const author_id = document.getElementById("author_id").textContent
+  const turnstile_token = turnstile.getResponse()
 
   const update_request = await fetch("/api/articles", {
     method: "PUT",
@@ -105,11 +112,16 @@ async function SendUpdateRequest() {
       Id: Number(GetPathValue()),
       Title: new_title,
       Content: new_content,
-      Author: Number(author_id)
+      Author: Number(author_id),
+      Turnstile_token: turnstile_token
     })
   })
   if (update_request.ok) {
     const message = JSON.parse(await update_request.json())
+    if (message != "Success!") {
+      turnstile.reset()
+      document.getElementById("status").textContent = message
+    }
     document.getElementById("status").textContent = message
  }
 }
