@@ -88,7 +88,7 @@ func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success
 	_, _, UserExist := ur.CheckIfUserExist(new_user)
 	var user models.User
 	if !UserExist {
-		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Created_at) VALUES($1, $2, $3)", new_user.Username, new_user.Password, time.Now())
+		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Bio, Created_at) VALUES($1, $2, $3, $4)", new_user.Username, new_user.Password, "", time.Now())
 		if err != nil {
 			log.Printf("User Query error: %v", err)
 			return 0, false
