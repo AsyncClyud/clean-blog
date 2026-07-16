@@ -20,49 +20,61 @@ func FormatIntoJson(message string, w http.ResponseWriter) {
 }
 
 func ResponseRegistration(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code{
+	case http.StatusOK:
 		FormatIntoJson("Account has been created!", w)
-	case status_code == 400:
-		FormatIntoJson("Account with this username is already exist!", w)
-	case status_code == 406:
-		FormatIntoJson("Username or Password is too short!(6 symbols for password, username len > 3)", w)
-	case status_code == 502:
+	case http.StatusBadRequest:
+		FormatIntoJson("Username must be at least 4 characters long!", w)
+	case http.StatusForbidden:
+		FormatIntoJson("Captcha verification failed!", w)
+	case http.StatusNotAcceptable:
+		FormatIntoJson("Username can only contain letters, numbers!", w)
+	case http.StatusConflict:
+		FormatIntoJson("Account with this username already exist!", w)
+	case http.StatusUnprocessableEntity:
+		FormatIntoJson("Password must be at least 6 characters long!", w)
+	case http.StatusBadGateway:
 		FormatIntoJson("Internal error!", w)
 	}
 }
 
 func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code{
+	case http.StatusOK:
 		FormatIntoJson("You has been successfully logined!", w)
-	case status_code == 400:
+	case http.StatusBadRequest:
 		FormatIntoJson("User with this username doesn't exist!", w)
-	case status_code == 406:
-		FormatIntoJson("Invalid password!", w)
-	case status_code == 404:
+	case http.StatusForbidden:
+		FormatIntoJson("Captcha verification failed!", w)
+	case http.StatusNotFound:
 		FormatIntoJson("Invalid username or password!", w)
+	case http.StatusNotAcceptable:
+		FormatIntoJson("Username can only contain letters, numbers!", w)
+	case http.StatusUnprocessableEntity:
+		FormatIntoJson("Password must be at least 6 characters long!", w)
 	}
 }
 
 func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code{
+	case http.StatusOK:
 		FormatIntoJson("Success!", w)
-	case status_code == 400:
-		FormatIntoJson("Article's title or content too short!", w)
-	case status_code == 403:
+	case http.StatusBadRequest:
+		FormatIntoJson("Article's title is too short!", w)
+	case http.StatusUnauthorized:
 		FormatIntoJson("You don't have permission to delete/edit this article!", w)
+	case http.StatusForbidden:
+		FormatIntoJson("Captcha verification required!", w)
 	}
 }
 
 func ResponseUsernameChange(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code{
+	case 200:
 		FormatIntoJson("Your username has been updated!", w)
-	case status_code == 400:
+	case 400:
 		FormatIntoJson("Username is too short!", w)
-	case status_code == 409:
+	case 409:
 		FormatIntoJson("Username is already in use!", w)
 	}
 }

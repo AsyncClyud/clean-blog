@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"blog/internal/config"
 	"blog/internal/models"
 	"blog/internal/service"
+	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -12,10 +14,12 @@ import (
 type PostHandler struct {
 	postService service.PostService
 	authService service.AuthService
+	Turnslite captcha.Verifier
+	Config config.Config
 }
 
-func NewPostHandler(postservice service.PostService, auth service.AuthService) *PostHandler {
-	return &PostHandler{postService: postservice, authService: auth}
+func NewPostHandler(postservice service.PostService, auth service.AuthService, config config.Config) *PostHandler {
+	return &PostHandler{postService: postservice, authService: auth, Turnslite: *captcha.NewVerifier(config), Config: config}
 }
 
 func (psh *PostHandler) PrivacyPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +105,17 @@ func (psh *PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Requ
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
+
+	cfToken := article.Turnstile_token
+	remoteAddr := r.RemoteAddr
+
+	ok, err := psh.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
+	if err != nil || !ok {
+		status_code := http.StatusForbidden
+		ResponseLogin(status_code, w, r)
+		return
+	}
+
 	cookie, err := r.Cookie("jwt-token")
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -126,6 +141,16 @@ func (psh *PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	cfToken := article.Turnstile_token
+	remoteAddr := r.RemoteAddr
+
+	ok, err := psh.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
+	if err != nil || !ok {
+		status_code := http.StatusForbidden
+		ResponseArticle(status_code, w, r)
+		return
+	}
+
 	cookie, err := r.Cookie("jwt-token")
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -137,7 +162,7 @@ func (psh *PostHandler) UpdateArticleHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	if article.Author != claims {
-		ResponseArticle(http.StatusForbidden, w, r)
+		ResponseArticle(http.StatusUnauthorized, w, r)
 		return
 	}
 	status_code := psh.postService.UpdateArticle(article)

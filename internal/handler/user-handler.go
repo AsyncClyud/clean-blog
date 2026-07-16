@@ -1,20 +1,26 @@
 package handler
 
 import (
+	"blog/internal/config"
 	"blog/internal/contextutil"
 	"blog/internal/models"
 	"blog/internal/service"
+	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
+	"log"
 	"net/http"
+	"time"
 )
 
 type UserHandler struct {
 	authService service.AuthService
+	Turnslite captcha.Verifier
+	Config config.Config
 }
 
-func NewUserHandler(service service.AuthService) *UserHandler {
-	return &UserHandler{authService: service}
+func NewUserHandler(service service.AuthService, config config.Config) *UserHandler {
+	return &UserHandler{authService: service, Turnslite: *captcha.NewVerifier(config), Config: config}
 }
 
 func (ush *UserHandler) IsAuth(w http.ResponseWriter, r *http.Request) {
@@ -58,16 +64,27 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Accept", "application/json")
 
 	var user models.User
-	error_decode := json.NewDecoder(r.Body).Decode(&user)
-	if error_decode != nil {
-		http.Error(w, "Invalid body", http.StatusBadRequest)
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		status_code := http.StatusBadRequest
+		ResponseRegistration(status_code, w, r)
+	}
+	cfToken := user.Turnstile_token
+	remoteAddr := r.RemoteAddr
+
+	ok, err := ush.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
+	if err != nil || !ok {
+		status_code := http.StatusForbidden
+		ResponseRegistration(status_code, w, r)
 		return
 	}
 
 	status_code, id := ush.authService.Register(user)
+	log.Println(status_code)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
 		ResponseRegistration(status_code, w, r)
+		return
 	} else {
 		ResponseRegistration(status_code, w, r)
 	}
@@ -77,18 +94,30 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Accept", "application/json")
 
 	var user models.User
-	error_decode := json.NewDecoder(r.Body).Decode(&user)
-	if error_decode != nil {
-		http.Error(w, "Invalid body", http.StatusBadRequest)
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		status_code := http.StatusBadRequest
+		ResponseLogin(status_code, w, r)
+	}
+	cfToken := user.Turnstile_token
+	remoteAddr := r.RemoteAddr
+
+	ok, err := ush.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
+	if err != nil || !ok {
+		status_code := http.StatusForbidden
+		ResponseLogin(status_code, w, r)
 		return
 	}
 
 	status_code, id := ush.authService.Login(user)
+	log.Println(status_code)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
 		ResponseLogin(status_code, w, r)
+		return
 	} else {
 		ResponseLogin(status_code, w, r)
+		return
 	}
 
 }
@@ -237,4 +266,16 @@ func (ush *UserHandler) GetArticleAuthorHandler(w http.ResponseWriter, r *http.R
 	if claims != author.Author {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	}
+}
+
+func (ush *UserHandler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "jwt-token",
+		Value:    "",
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		Expires: time.Unix(0, 0),
+	})
 }
