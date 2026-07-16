@@ -14,6 +14,7 @@ type Config struct {
 	DBName     string
 	DBSSLMode  string
 	JWTSecret  string
+	Cloudflare_secret string
 	Port       string
 }
 
@@ -27,6 +28,7 @@ func Load() *Config {
 		DBName:     os.Getenv("DB_NAME"),
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 		JWTSecret:  os.Getenv("JWT_SECRET"),
+		Cloudflare_secret: os.Getenv("CLOUDFLARE_SECRET"),
 		Port:       getEnv("PORT", "8080"),
 	}
 
