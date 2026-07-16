@@ -14,6 +14,16 @@ func NewPostService(repo storage.PostRepository) *PostService {
 	return &PostService{repo: repo}
 }
 
+func (pr PostService) ValidateArticle(article models.Article) (status_code int) {
+	if len(article.Title) <= 3 {
+		return http.StatusBadRequest
+	}
+	if len(article.Content) <= 3 {
+		return http.StatusUnprocessableEntity
+	}
+	return http.StatusOK
+}
+
 func (pr PostService) GetArticles() (articles string) {
 	return pr.repo.GetAllArticles()
 }
@@ -42,14 +52,4 @@ func (pr PostService) UpdateArticle(article models.Article) (status_code int) {
 
 func (pr PostService) DeleteArticle(article models.Article) {
 	pr.repo.DeleteArticle(article)
-}
-
-func (pr PostService) ValidateArticle(article models.Article) (status_code int) {
-	if len(article.Title) <= 3 {
-		return http.StatusBadRequest
-	}
-	if len(article.Content) <= 3 {
-		return http.StatusBadRequest
-	}
-	return http.StatusOK
 }

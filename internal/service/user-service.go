@@ -6,6 +6,7 @@ import (
 	"blog/internal/storage"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -85,11 +86,14 @@ func (ur *AuthService) SetTokenInCookie(w http.ResponseWriter, id int) {
 }
 
 func (ur *AuthService) ValidateUserData(user models.User) (status_code int) {
+	if strings.ContainsAny(user.Username, ` !@#$%^&*();:{}[]"'.,?/-_+=`) == true {
+		return http.StatusNotAcceptable
+	}
 	if len(user.Username) <= 2 {
 		return http.StatusBadRequest
 	}
 	if len(user.Password) <= 5 {
-		return http.StatusNotAcceptable
+		return http.StatusUnprocessableEntity
 	}
 	return http.StatusOK
 }
@@ -103,8 +107,8 @@ func (ur *AuthService) FetchUser(user_id int) (user string, status_code int) {
 }
 
 func (ur *AuthService) Register(user models.User) (status_code, id int) {
-	if ur.ValidateUserData(user) == 400 {
-		return http.StatusNotAcceptable, 0
+	if code := ur.ValidateUserData(user); code != http.StatusOK {
+		return code, 0
 	}
 	hashed_password, err := ur.HashPassword(user.Password)
 	if err != nil {
@@ -114,17 +118,14 @@ func (ur *AuthService) Register(user models.User) (status_code, id int) {
 
 	id, message := ur.repo.CreateUser(new_user)
 	if !message {
-		return http.StatusBadRequest, 0
+		return http.StatusConflict, 0
 	}
 	return http.StatusOK, id
 }
 
 func (ur *AuthService) Login(user models.User) (status_code, id int) {
-	if ur.ValidateUserData(user) == 400 {
-		return http.StatusBadRequest, 0
-	}
-	if ur.ValidateUserData(user) == 406 {
-		return http.StatusNotAcceptable, 0
+	if code := ur.ValidateUserData(user); code != http.StatusOK {
+		return code, 0
 	}
 	id, hashed_password, ok := ur.repo.CheckIfUserExist(user)
 	if !ok {
