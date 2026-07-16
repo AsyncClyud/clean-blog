@@ -9,7 +9,6 @@ import (
 	"blog/internal/storage"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -22,15 +21,15 @@ func main() {
 
 	cfg := config.Load()
 
-	db := storage.ConnectDataBase(os.Getenv("DATABASE_URL"))
+	db := storage.ConnectDataBase(cfg.DSN())
 	defer db.Close()
 
 	postDB := storage.NewPostRepo(db)
 	userDB := storage.NewUserRepo(db)
 	postService := service.NewPostService(*postDB)
 	authService := service.NewAuthService(*userDB, []byte(cfg.JWTSecret))
-	postHandler := handler.NewPostHandler(*postService, *authService)
-	userHandler := handler.NewUserHandler(*authService)
+	postHandler := handler.NewPostHandler(*postService, *authService, *cfg)
+	userHandler := handler.NewUserHandler(*authService, *cfg)
 	middleware := middleware.NewAuthMiddleware(*authService)
 
 	router := router.Router(*postDB, *userDB, *postHandler, *userHandler, *authService, *middleware)
@@ -38,7 +37,7 @@ func main() {
 	log.Println("Server is started...")
 	log.Printf("Go to http://localhost:%v", cfg.Port)
 
-	err := http.ListenAndServe(":"+cfg.Port, router)
+	err := http.ListenAndServe("0.0.0.0:"+cfg.Port, router)
 	if err != nil {
 		log.Fatalln(err)
 	}
