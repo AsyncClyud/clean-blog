@@ -1,20 +1,29 @@
 package models
 
+type User struct {
+	Id              int     `json:"Id"`
+	Username        string  `json:"Username"`
+	Password        string  `json:"Password"`
+	Bio             *string `json:"Bio"`
+	Created_at      *string `json:"Created_at"`
+	Turnstile_token string  `json:"Turnstile_token"`
+}
+
 type Article struct {
-	Id         int    `json:"Id"`
-	Title      string `json:"Title"`
-	Content    string `json:"Content"`
-	Created_at string `json:"Created_at"`
-	Author     int    `json:"Author"`
+	Id              int    `json:"Id"`
+	Title           string `json:"Title"`
+	Content         string `json:"Content"`
+	Created_at      string `json:"Created_at"`
+	Author          int    `json:"Author"`
 	Turnstile_token string `json:"Turnstile_token"`
 }
 
-type User struct {
-	Id         int     `json:"Id"`
-	Username   string  `json:"Username"`
-	Password   string  `json:"Password"`
-	Bio        *string `json:"Bio"`
-	Created_at *string `json:"Created_at"`
+type Comment struct {
+	Id              int    `json:"Id"`
+	Comment_content string `json:"Comment_content"`
+	Created_at      string `json:"Created_at"`
+	Post_id         int    `json:"Post_id"`
+	Author          int    `json:"Author"`
 	Turnstile_token string `json:"Turnstile_token"`
 }
 
