@@ -1,9 +1,3 @@
-@media (max-width: 600px) {
-    .main, .articles {
-        width: 90vw;
-    }
-}
-
 body {
     background: #212830;
     display: grid;
@@ -33,7 +27,7 @@ body {
     display: grid;
     margin-left: auto;
     margin-right: auto;
-    width: 60vw;
+    width: 70vw;
     color: #d1d7e0;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;

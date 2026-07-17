@@ -1,9 +1,3 @@
-@media (max-width: 600px) {
-    .main, .articles {
-        width: 90vw;
-    }
-}
-
 body {
     background: #212830;
     display: grid;
@@ -48,13 +42,6 @@ body {
         resize: none;
         width: 60%
     }
-    button {
-        font-family: 'JetBrains Mono', monospace;
-        height: 6vh;
-        width: 5vw;
-        margin: 10px;
-        border-radius: 10px;
-    }
     grid-template-rows: auto auto auto auto;
     justify-items: center;
     align-content: center;
@@ -63,9 +50,85 @@ body {
 
 .articles {
     height: fit-content;
-    width: 55vw;
+    width: 75vw;
     background-color: #212121;
     border-radius: 5px;
+    white-space: pre-wrap;
+    .data {
+        color: #6b7684;
+        margin-right: auto;
+    }
+}
+
+.editor {
+    height: fit-content;
+    width: 75vw;
+    background-color: #212121;
+    border-radius: 5px;
+    button {
+        font-family: 'JetBrains Mono', monospace;
+        height: 6vh;
+        width: 5vw;
+        margin: 10px;
+        border-radius: 10px;
+    }
+}
+
+.comments {
+    height: min-content;
+    width: 50vw;
+    background-color: #2a323c;
+    border-radius: 10px;
+    outline: 3px;
+    outline-color: #151b23;
+    outline-style: solid;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.comments_title {
+    height: min-content;
+    width: 70vw;
+    background-color: #333c46;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    outline: 2px;
+    outline-color: #151b23;
+    outline-style: solid;
+}
+
+.actions {
+    height: fit-content;
+    width: 75vw;
+    background-color: #212121;
+    button {
+        font-family: 'JetBrains Mono', monospace;
+        height: 4vh;
+        width: 5vw;
+        margin: 5px;
+        border-radius: 10px;
+        white-space: normal;
+    }
+}
+
+.comment_creator {
+    height: fit-content;
+    width: 75vw;
+    background-color: #212121;
+    textarea {
+        box-sizing: border-box;
+        resize: none;
+        width: 80%
+    }
+    button {
+        font-family: 'JetBrains Mono', monospace;
+        height: 6vh;
+        width: 6vw;
+        margin: 5px;
+        border-radius: 10px;
+        white-space: normal;
+    }
 }
 
 .footer {

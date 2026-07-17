@@ -9,6 +9,7 @@ async function Auth() {
     const data = await response.json()
     if (data.authorized == true) {
       const header_element = document.getElementById("header")
+      const comment_creator_element = document.getElementById("comment_creator")
 
       const profile = document.createElement("a")
       profile.href = `/profile`
@@ -23,6 +24,14 @@ async function Auth() {
       header_element.appendChild(profile)
       header_element.append(create_article)
       header_element.append(logout)
+
+      comment_creator_element.innerHTML = `
+        <h2>Leave a comment</h2>
+        <textarea id="comment_content" rows="10" placeholder="Share your thoughts..."></textarea> <br>
+        <button type="button" onclick="SendCreateCommentRequest()">Post comment</button>
+        <p id="status"></p>
+        <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u" data-theme="dark"></div>
+        `
     }
     else {
       const header_element = document.getElementById("header")

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Article</title>
     <meta name="description" content="Article page">
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="/article/styles/styles.css">
     <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
     <link rel="shortcut icon" href="/icons/favicon.ico" />
@@ -25,6 +25,8 @@
         <a href="/">Main</a>
     </header>
     <main class="main" id="main">
+        <div id="article"></div>
+        <div class="comment_creator" id="comment_creator"></div>
     </main>
     <footer class="footer" id="footer">
         <a href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
@@ -32,7 +34,11 @@
         <a href="/terms">Terms of service</a>
     </footer>
     <script>
-    Fetch_Article()
+    (async () => {
+      await FetchArticle();
+      await FetchArticleComments();
+    })();
     </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

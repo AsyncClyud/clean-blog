@@ -21,5 +21,8 @@ async function SendLoginRequest() {
       document.getElementById("status").textContent = message
     }
     document.getElementById("status").textContent = message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace("/profile")
+
   }
 }

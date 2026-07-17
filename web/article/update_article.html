@@ -27,16 +27,16 @@
         <button type="button", onclick="Logout()">Logout</button>
     </header>
     <main class="main" id="main">
-        <div class="articles" id="article">
+        <div class="editor" id="editor">
             <h3>Title</h3>
             <p id="title"></p>
             <input type="text" id="new_title"> <br>
             <h3>Content</h3>
             <textarea id="new_content" rows="10" cols="40"></textarea> <br>
-            <button type="button" onclick="SendUpdateRequest()">Update</button>
+            <button type="button" onclick="SendUpdateArticleRequest()">Update</button>
             <p id="author">Article Author ID:</p>
             <p id="author_id"></p>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u" data-theme="dark"></div>
             <p id="status"></p>
         </div>
     </main>

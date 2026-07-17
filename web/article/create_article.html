@@ -11,7 +11,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Clean Blog" />
     <link rel="manifest" href="/icons/site.webmanifest" />
-	<link rel="stylesheet" href="styles/styles.css">
+	<link rel="stylesheet" href="/article/styles/styles.css">
 	<script src="/article/scripts/logout.js"></script>
 	<script src="/article/scripts/requests.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,13 +26,13 @@
         <button type="button", onclick="Logout()">Logout</button>
     </header>
     <main class="main" id="main">
-        <div class="articles" id="articles">
+        <div class="editor" id="editor">
         <h3>Title</h3>
         <input type="text" id="title"> <br>
         <h3>Content</h3>
         <textarea id="content" rows="15" cols="50"></textarea> <br>
-        <button type="button" onclick="SendCreateRequest()">create</button>
-        <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u"></div>
+        <button type="button" onclick="SendCreateArticleRequest()">create</button>
+        <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD2voHPreG9maJ8u" data-theme="dark"></div>
         <p id="status"></p>
         </div>
     </main>
