@@ -153,7 +153,7 @@ func (ur *AuthService) ChangeUsername(user models.User, user_id int) (status_cod
 func (ur *AuthService) ChangeBio(user models.User, user_id int) (status_code int) {
 	message := ur.repo.UpdateBio(user, user_id)
 	if !message {
-		return http.StatusBadGateway
+		return http.StatusBadRequest
 	}
 
 	return http.StatusOK

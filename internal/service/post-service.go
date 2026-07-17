@@ -53,3 +53,23 @@ func (pr PostService) UpdateArticle(article models.Article) (status_code int) {
 func (pr PostService) DeleteArticle(article models.Article) {
 	pr.repo.DeleteArticle(article)
 }
+
+func (pr PostService) ValidateComment(comment models.Comment) (status_code int) {
+	if len(comment.Comment_content) == 0 {
+		return http.StatusBadRequest
+	}
+	return http.StatusOK
+}
+
+func (pr PostService) GetArticleCommentsById(id int) (comments string) {
+	return pr.repo.GetArticleCommentsById(id)
+}
+
+func (pr PostService) InsertComment(comment models.Comment, author_id int) (status_code int) {
+	status := pr.ValidateComment(comment)
+	if status != http.StatusOK {
+		return status
+	}
+	pr.repo.InsertComment(comment, author_id)
+	return http.StatusOK
+}
