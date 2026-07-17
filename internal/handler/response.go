@@ -20,7 +20,7 @@ func FormatIntoJson(message string, w http.ResponseWriter) {
 }
 
 func ResponseRegistration(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch status_code{
+	switch status_code {
 	case http.StatusOK:
 		FormatIntoJson("Account has been created!", w)
 	case http.StatusBadRequest:
@@ -39,7 +39,7 @@ func ResponseRegistration(status_code int, w http.ResponseWriter, r *http.Reques
 }
 
 func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch status_code{
+	switch status_code {
 	case http.StatusOK:
 		FormatIntoJson("You has been successfully logined!", w)
 	case http.StatusBadRequest:
@@ -56,7 +56,7 @@ func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
 }
 
 func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch status_code{
+	switch status_code {
 	case http.StatusOK:
 		FormatIntoJson("Success!", w)
 	case http.StatusBadRequest:
@@ -68,31 +68,42 @@ func ResponseArticle(status_code int, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ResponseComment(status_code int, w http.ResponseWriter, r *http.Request) {
+	switch status_code {
+	case http.StatusOK:
+		FormatIntoJson("Success!", w)
+	case http.StatusBadRequest:
+		FormatIntoJson("Comment content cannot be null!", w)
+	case http.StatusForbidden:
+		FormatIntoJson("Captcha verification required!", w)
+	}
+}
+
 func ResponseUsernameChange(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch status_code{
-	case 200:
+	switch status_code {
+	case http.StatusOK:
 		FormatIntoJson("Your username has been updated!", w)
-	case 400:
+	case http.StatusBadRequest:
 		FormatIntoJson("Username is too short!", w)
-	case 409:
+	case http.StatusConflict:
 		FormatIntoJson("Username is already in use!", w)
 	}
 }
 
 func ResponseBioChange(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code {
+	case http.StatusOK:
 		FormatIntoJson("Your bio has been updated!", w)
-	case status_code == 502:
+	case http.StatusBadRequest:
 		FormatIntoJson("Bio is too long! 2000 chars max!", w)
 	}
 }
 
 func ResponsePasswordChange(status_code int, w http.ResponseWriter, r *http.Request) {
-	switch {
-	case status_code == 200:
+	switch status_code {
+	case http.StatusOK:
 		FormatIntoJson("Password has been updated!", w)
-	case status_code == 400:
+	case http.StatusBadRequest:
 		FormatIntoJson("Incorrect password!", w)
 	}
 }

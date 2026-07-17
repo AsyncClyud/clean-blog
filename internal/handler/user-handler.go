@@ -8,15 +8,14 @@ import (
 	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
-	"log"
 	"net/http"
 	"time"
 )
 
 type UserHandler struct {
 	authService service.AuthService
-	Turnslite captcha.Verifier
-	Config config.Config
+	Turnslite   captcha.Verifier
+	Config      config.Config
 }
 
 func NewUserHandler(service service.AuthService, config config.Config) *UserHandler {
@@ -80,7 +79,6 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	status_code, id := ush.authService.Register(user)
-	log.Println(status_code)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
 		ResponseRegistration(status_code, w, r)
@@ -110,7 +108,6 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	status_code, id := ush.authService.Login(user)
-	log.Println(status_code)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
 		ResponseLogin(status_code, w, r)
@@ -276,6 +273,6 @@ func (ush *UserHandler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
-		Expires: time.Unix(0, 0),
+		Expires:  time.Unix(0, 0),
 	})
 }
