@@ -22,6 +22,7 @@ func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHa
 
 	mux.Handle("GET /privacy", middleware.SecureHeaders(http.HandlerFunc(postHandler.PrivacyPageHandler)))
 	mux.Handle("GET /terms", middleware.SecureHeaders(http.HandlerFunc(postHandler.TermsPageHandler)))
+	mux.Handle("GET /not_found", middleware.SecureHeaders(http.HandlerFunc(postHandler.NotFoundPageHandler)))
 	mux.Handle("GET /api/auth", middleware.SecureHeaders(http.HandlerFunc(userHandler.IsAuth)))
 	mux.Handle("GET /auth/register", middleware.SecureHeaders(http.HandlerFunc(userHandler.RegisterPageHandler)))
 	mux.Handle("POST /auth/register", middleware.SecureHeaders(http.HandlerFunc(userHandler.RegisterHandler)))
@@ -30,6 +31,7 @@ func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHa
 	mux.Handle("GET /article/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.ArticlePageHandler)))
 	mux.Handle("GET /api/articles/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticleByIdHandler)))
 	mux.Handle("GET /api/articles", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticlesHandler)))
+	mux.Handle("GET /api/comments/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticleComments)))
 	mux.Handle("GET /profile", middleware.SecureHeaders(http.HandlerFunc(userHandler.MainProfilePageHandler)))
 	mux.Handle("GET /user_profile/{Id}", middleware.SecureHeaders(http.HandlerFunc(userHandler.UserProfilePageHandler)))
 
@@ -45,6 +47,7 @@ func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHa
 	mux.Handle("DELETE /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.DeleteArticleHandler)))
 	mux.Handle("GET /article/create", middleware.RequireAuth(http.HandlerFunc(postHandler.CreateArticlePageHandler)))
 	mux.Handle("GET /article/update/{Id}", middleware.RequireAuth(http.HandlerFunc(postHandler.UpdateArticlePageHandler)))
+	mux.Handle("POST /api/comments", middleware.SecureHeaders(http.HandlerFunc(postHandler.InsertCommentHandler)))
 
 	return mux
 
