@@ -109,6 +109,7 @@ func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success
 	} else {
 		return 0, false
 	}
+	log.Printf("New user has been created with id: %v", user.Id)
 	return user.Id, true
 }
 
