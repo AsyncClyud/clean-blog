@@ -8,6 +8,7 @@ import (
 	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
+	"log"
 	"net/http"
 	"time"
 )
@@ -81,6 +82,7 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 	status_code, id := ush.authService.Register(user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
+		log.Printf("IP %v has been registered", remoteAddr)
 		ResponseRegistration(status_code, w, r)
 		return
 	} else {
@@ -110,6 +112,7 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	status_code, id := ush.authService.Login(user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
+		log.Printf("IP %v has been loggined", remoteAddr)
 		ResponseLogin(status_code, w, r)
 		return
 	} else {
