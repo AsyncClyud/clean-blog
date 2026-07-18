@@ -35,6 +35,7 @@ async function FetchArticle() {
 }
 
 async function GetArticleAuthor() {
+  const id = GetPathValue()
   const author_id = document.getElementById("author_id").textContent
 
   const article_author_request = await fetch("/api/users", {
@@ -50,7 +51,7 @@ async function GetArticleAuthor() {
     actions_element.setAttribute("class", "actions")
     actions_element.innerHTML = `
       <button type="button" onclick="SendDeleteArticleRequest()">Delete Article</button>
-      <button type="button" onclick="UpdatePageRedirect()">Update Article</button>
+      <button type="button" onclick="UpdatePageRedirect(${id})">Update Article</button>
       `
     main_element.appendChild(actions_element)
   }
@@ -116,7 +117,7 @@ async function SendDeleteArticleRequest() {
     })
   })
   if (delete_request.ok) {
-   document.location.replace("/")
+   window.location.replace("/")
   }
 }
 

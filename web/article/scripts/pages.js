@@ -18,6 +18,9 @@ async function FetchArticleInfo() {
     document.getElementById("title").textContent = `${article_info.Title}`
     document.getElementById("new_content").textContent = `${article_info.Content}`
     document.getElementById("author_id").textContent = `${article_info.Author}`
+    if (document.getElementById("author_id").textContent == "0") {
+      window.location.replace("/not_found")
+    }
   }
 }
 
