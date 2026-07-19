@@ -20,8 +20,10 @@ async function SendRegisterRequest() {
       turnstile.reset()
       document.getElementById("status").textContent = message
     }
-    document.getElementById("status").textContent = message
-    await new Promise(r => setTimeout(r, 2000));
-    window.location.replace("/profile")
+    else {
+      document.getElementById("status").textContent = message
+      await new Promise(r => setTimeout(r, 2000));
+      window.location.replace("/profile")
+    }
   }
 }
