@@ -5,51 +5,57 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Settings</title>
 	<meta name="description" content="Settings page">
-	<link rel="stylesheet" href="/profile/styles/styles.css">
 	<link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
 	<link rel="shortcut icon" href="/icons/favicon.ico" />
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="Clean Blog" />
 	<link rel="manifest" href="/icons/site.webmanifest" />
-	<script src="scripts/settings.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+    @theme {
+    --color-clifford: #da373d;
+    }
+    </style>
+    <script src="/profile/scripts/logout.js"></script>
+	<script src="/profile/scripts/settings.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header class="header" id="header">
-        <h1>Clean Blog</h1>
-        <a href="/">Main</a>
-        <a href="/profile">Profile</a>
-        <button type="button", onclick="Logout()">Logout</button>
+<body class="min-h-[100vh] bg-[#212830] grid grid-rows-[auto_1fr_auto] m-[0]">
+    <header class="h-[13vh] w-auto bg-[#151b23] text-[white] font-[JetBrains_Mono] row-[1] outline-[2px] outline-solid outline-[#333c46]" id="header">
+        <h1 class="text-[5vh] text-[#d1d7e0] font-[JetBrains_Mono] m-[5px]">Clean Blog</h1>
+        <a class="bg-[#2a323c] text-[gainsboro] rounded-[3px] p-[5px] m-[5px]" href="/">Main</a>
+        <a class="bg-[#2a323c] text-[gainsboro] rounded-[3px] p-[5px] m-[5px]" href="/profile">Settings</a>
+        <button class="bg-[#2a323c] text-[gainsboro] rounded-[3px] p-[5px] m-[5px]" type="button", onclick="Logout()">Logout</button>
     </header>
-    <main class="main" id="main">
-        <div class="settings" id="actions">
-            <h2>Account info</h2>
-            <h3>Username</h3>
+    <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[5px] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
+        <div class="h-fit w-[65vw] bg-[#212121] m-[5px] rounded-[5px]" id="actions">
+            <h2 class="text-[4vh] m-[10px]">Account info</h2>
+            <h3 class="text-[3vh] m-[10px]">Username</h3>
             <p id="username"></p>
-            <input type="text" id="input_username">
+            <input class="w-[30vw] bg-[white] text-[black] rounded-[2px]" type="text" placeholder="Type a new username..." id="input_username">
             <p id="message_username"></p>
-            <button type="button" onclick="SendUpdateUsernameRequest()">Change Username</button>
-            <h3>Bio</h3>
+            <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendUpdateUsernameRequest()">Change Username</button>
+            <h3 class="text-[3vh] m-[10px]">Bio</h3>
             <p id="bio"></p>
-            <textarea id="input_bio" rows="5" cols="30"></textarea> <br>
-            <button type="button" onclick="SendUpdateBioRequest()">Change bio</button>
+            <textarea class="w-[50vw] bg-[white] text-[black] resize-none rounded-[2px]" rows="15" cols="50" placeholder="Type a bio..." id="input_bio" rows="5" cols="30"></textarea> <br>
+            <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendUpdateBioRequest()">Change bio</button>
             <p id="message_bio"></p>
-            <h3>Password</h3>
-            <p>Enter old password</p>
-            <input type="password" id="input_old_password">
-            <p>Enter new password</p>
-            <input type="password" id="input_new_password"> <br>
-            <button type="button" onclick="SendUpdatePasswordRequest()">Change password</button>
+            <h3 class="text-[3vh] m-[10px]">Password</h3>
+            <p class="m-[5px]">Enter old password</p>
+            <input class="w-[30vw] bg-[white] text-[black] rounded-[2px]" placeholder="Type a old password..." type="password" id="input_old_password">
+            <p class="m-[5px]">Enter new password</p>
+            <input class="w-[30vw] bg-[white] text-[black] rounded-[2px]" placeholder="Type a new password..." type="password" id="input_new_password"> <br>
+            <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendUpdatePasswordRequest()">Change password</button>
             <p id="message_password"></p>
         </div>
     </main>
-    <footer class="footer" id="footer">
-        <a href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/terms">Terms of service</a>
+    <footer class="h-[8vh] w-auto row-[3] bg-[#212830] text-center text-[gainsboro] font-[JetBrains_Mono] outline-[3px] outline-solid outline-[#151b23]" id="footer">
+        <a class="m-[5px] text-[gainsboro]" href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
+        <a class="m-[5px] text-[gainsboro]" href="/privacy">Privacy Policy</a>
+        <a class="m-[5px] text-[gainsboro]" href="/terms">Terms of Service</a>
     </footer>
 
     <script>

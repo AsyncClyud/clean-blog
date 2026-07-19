@@ -11,11 +11,11 @@ async function FetchUserProfile() {
     const user_info = document.createElement("div")
     user_info.setAttribute("id", "profile")
     user_info.innerHTML = `
-      <div class ="profile" id="profile">
-      <img src="profile/images/avatar.webp" alt="Avatar" width="150" height="150">
-      <h3 id="username">${data.Username}</h3>
-      <p>${data.Bio}</p>
-      <p>${data.Created_at}</p>
+      <div class="h-fit w-[70vw] bg-[#212121] rounded-[5px]" id="profile">
+      <img class="m-[5px] ml-auto mr-auto" src="profile/images/avatar.webp" alt="Avatar" width="150" height="150">
+      <h3 class="text-[4vh] m-[10px]" id="username">${data.Username}</h3>
+      <p class="text-[2vh] m-[5px] px-8">${data.Bio}</p>
+      <p class="text-[gray] m-[20px]">${data.Created_at}</p>
       </div>
     `
     main_element.appendChild(user_info)
