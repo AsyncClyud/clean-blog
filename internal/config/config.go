@@ -7,29 +7,29 @@ import (
 )
 
 type Config struct {
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
-	JWTSecret  string
+	DBHost            string
+	DBPort            string
+	DBUser            string
+	DBPassword        string
+	DBName            string
+	DBSSLMode         string
+	JWTSecret         string
 	Cloudflare_secret string
-	Port       string
+	Port              string
 }
 
 func Load() *Config {
 
 	cfg := &Config{
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
-		JWTSecret:  os.Getenv("JWT_SECRET"),
+		DBHost:            getEnv("DB_HOST", "localhost"),
+		DBPort:            getEnv("DB_PORT", "5432"),
+		DBUser:            os.Getenv("DB_USER"),
+		DBPassword:        os.Getenv("DB_PASSWORD"),
+		DBName:            os.Getenv("DB_NAME"),
+		DBSSLMode:         getEnv("DB_SSLMODE", "disable"),
+		JWTSecret:         os.Getenv("JWT_SECRET"),
 		Cloudflare_secret: os.Getenv("CLOUDFLARE_SECRET"),
-		Port:       getEnv("PORT", "8080"),
+		Port:              getEnv("PORT", "8080"),
 	}
 
 	if cfg.JWTSecret == "" {
