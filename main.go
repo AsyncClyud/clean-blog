@@ -38,7 +38,7 @@ func main() {
 	log.Println("Server is started...")
 	log.Printf("Go to http://localhost:%v", cfg.Port)
 
-	err := http.ListenAndServe("0.0.0.0:"+cfg.Port, router)
+	err := http.ListenAndServe("localhost:"+cfg.Port, router)
 	if err != nil {
 		log.Fatalln(err)
 	}
