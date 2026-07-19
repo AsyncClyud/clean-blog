@@ -15,15 +15,15 @@ async function FetchArticle() {
   if (get_article_request.ok) {
     const article = JSON.parse(await get_article_request.json());
     const article_element = document.getElementById("article");
-    article_element.setAttribute("class", "articles");
+    article_element.setAttribute("class", "w-[90vw] h-fit bg-[#212121] rounded-[5px]");
     article_element.innerHTML = `
-    <h3 id = "title">${article.Title}</h3>
-    <p id ="content">${article.Content}</p>
-    <p class="data" id="created_at">${article.Created_at}</p>
-    <p>Article Author ID:</p>
-    <p id="author_id">${article.Author}</p>
-    <h3 class="comments_title">Comments</h3>
-    <div class="comments" id="comments"></div>
+    <h3 class="text-[4vh] m-[10px]" id="title">${article.Title}</h3>
+    <p class="text-[2vh] m-[5px] px-8" id="content">${article.Content}</p>
+    <p class="text-[gray] m-[20px]" id="created_at">${article.Created_at}</p>
+    <p class="m-[5px]" >Article Author ID:</p>
+    <p class="m-[20px]" id="author_id">${article.Author}</p>
+    <h3 class="h-[min-content] w-[65vw] bg-[#333c46] text-[2vh] rounded-[10px] m-[3px] ml-auto mr-auto outline-[3px] outline-solid outline-[#151b23]">Comments</h3>
+    <div class="h-[min-content] w-[60vw] bg-[#2a323c] rounded-[5px] m-[10px] ml-auto mr-auto p-4" id="comments"></div>
     `;
     document.title = article.Title
 
@@ -48,10 +48,10 @@ async function GetArticleAuthor() {
   if (article_author_request.ok) {
     const main_element = document.getElementById("main")
     const actions_element = document.createElement("div")
-    actions_element.setAttribute("class", "actions")
+    actions_element.setAttribute("class", "h-fit w-[90vw] bg-[#212121] p-6")
     actions_element.innerHTML = `
-      <button type="button" onclick="SendDeleteArticleRequest()">Delete Article</button>
-      <button type="button" onclick="UpdatePageRedirect(${id})">Update Article</button>
+      <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[3px] m-[5px] p-[5px]" type="button" onclick="SendDeleteArticleRequest()">Delete Article</button>
+      <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[3px] m-[5px] p-[5px]" type="button" onclick="UpdatePageRedirect(${id})">Edit Article</button>
       `
     main_element.appendChild(actions_element)
   }
@@ -71,8 +71,8 @@ async function FetchArticleComments() {
       const comment_element = document.createElement("div");
       comment_element.innerHTML = `
         <h3>Author Id: ${comment.Author}</h3>
-        <p>${comment.Comment_content}</p>
-        <p class="data">${comment.Created_at}</p>
+        <p class="m-[5px]">${comment.Comment_content}</p>
+        <p class="text-[gray] m-[20px]">${comment.Created_at}</p>
         <hr>
         `
         comments_element.appendChild(comment_element)
