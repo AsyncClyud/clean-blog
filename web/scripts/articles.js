@@ -9,14 +9,14 @@ async function Fetch_Articles() {
     const data = JSON.parse(await response.json());
     const articles_element = document.getElementById("articles");
     data.forEach((article) => {
-      const link = document.createElement("a");
-      link.href = `/article/${article.Id}`;
-      link.textContent = article.Title;
+      const article_element = document.createElement("div")
+      article_element.setAttribute("id", `${article.Id}`)
+      article_element.innerHTML = `
+        <a href="/article/${article.Id}">${article.Title}</a>
+        <hr>
+        `
 
-      const div = document.createElement("div");
-      div.appendChild(link);
-
-      articles_element.appendChild(div);
+      articles_element.appendChild(article_element);
     });
   }
 }
