@@ -2,7 +2,7 @@ package tests
 
 import (
 	"blog/internal/models"
-	"blog/internal/service"
+	service "blog/internal/service/post"
 	"net/http"
 	"testing"
 )

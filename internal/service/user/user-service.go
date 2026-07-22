@@ -1,9 +1,9 @@
-package service
+package userservice
 
 import (
 	_ "blog/internal/config"
 	"blog/internal/models"
-	"blog/internal/storage"
+	userstorage "blog/internal/storage/user"
 	"fmt"
 	"net/http"
 	"strings"
@@ -14,11 +14,11 @@ import (
 )
 
 type AuthService struct {
-	repo       storage.UserRepository
+	repo       userstorage.UserRepository
 	secret_key []byte
 }
 
-func NewAuthService(userDB storage.UserRepository, secret_key []byte) *AuthService {
+func NewAuthService(userDB userstorage.UserRepository, secret_key []byte) *AuthService {
 	return &AuthService{repo: userDB, secret_key: secret_key}
 }
 

@@ -1,16 +1,16 @@
-package service
+package postservice
 
 import (
 	"blog/internal/models"
-	"blog/internal/storage"
+	poststorage "blog/internal/storage/post"
 	"net/http"
 )
 
 type PostService struct {
-	repo storage.PostRepository
+	repo poststorage.PostRepository
 }
 
-func NewPostService(repo storage.PostRepository) *PostService {
+func NewPostService(repo poststorage.PostRepository) *PostService {
 	return &PostService{repo: repo}
 }
 
