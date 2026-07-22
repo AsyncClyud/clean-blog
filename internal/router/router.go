@@ -1,14 +1,16 @@
 package router
 
 import (
-	"blog/internal/handler"
+	posthandler "blog/internal/handler/post"
+	userhandler "blog/internal/handler/user"
 	"blog/internal/middleware"
-	"blog/internal/service"
-	"blog/internal/storage"
+	userservice "blog/internal/service/user"
+	poststorage "blog/internal/storage/post"
+	userstorage "blog/internal/storage/user"
 	"net/http"
 )
 
-func Router(postDB storage.PostRepository, userDB storage.UserRepository, postHandler handler.PostHandler, userHandler handler.UserHandler, authUser service.AuthService, middleware middleware.Middleware) *http.ServeMux {
+func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	FsMain := http.FileServer(http.Dir("web"))
