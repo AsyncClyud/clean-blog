@@ -2,16 +2,16 @@ package middleware
 
 import (
 	"blog/internal/contextutil"
-	"blog/internal/service"
+	userservice "blog/internal/service/user"
 	"context"
 	"net/http"
 )
 
 type Middleware struct {
-	Middleware service.AuthService
+	Middleware userservice.AuthService
 }
 
-func NewAuthMiddleware(service service.AuthService) *Middleware {
+func NewAuthMiddleware(service userservice.AuthService) *Middleware {
 	return &Middleware{Middleware: service}
 }
 
