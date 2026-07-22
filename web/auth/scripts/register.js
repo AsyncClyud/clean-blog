@@ -15,15 +15,14 @@ async function SendRegisterRequest() {
     })
   })
   if (response.ok) {
-    const message = JSON.parse(await response.json())
-    if (message != "Account has been created!") {
-      turnstile.reset()
-      document.getElementById("status").textContent = message
+    const message = await response.json()
+    document.getElementById("status").textContent = message.Message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace("/profile")
     }
-    else {
-      document.getElementById("status").textContent = message
-      await new Promise(r => setTimeout(r, 2000));
-      window.location.replace("/profile")
-    }
+  else {
+    const message = await response.json()
+    document.getElementById("status").textContent = message.Message
+    turnstile.reset()
   }
 }

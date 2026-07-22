@@ -26,8 +26,12 @@ async function SendUpdateUsernameRequest() {
 
   })
   if (response.ok) {
-    const message = JSON.parse(await response.json())
-    document.getElementById("message_username").textContent = message
+    const message = await response.json()
+    document.getElementById("message_username").textContent = message.Message
+  }
+  else {
+    const message = await response.json()
+    document.getElementById("message_username").textContent = message.Message
   }
 }
 
@@ -42,8 +46,12 @@ async function SendUpdateBioRequest() {
 
   })
   if (response.ok) {
-    const message = JSON.parse(await response.json())
-    document.getElementById("message_bio").textContent = message
+    const message = await response.json()
+    document.getElementById("message_bio").textContent = message.Message
+  }
+  else {
+    const message = await response.json()
+    document.getElementById("message_bio").textContent = message.Message
   }
 }
 
@@ -60,7 +68,11 @@ async function SendUpdatePasswordRequest() {
 
   })
   if (response.ok) {
-    const message = JSON.parse(await response.json())
-    document.getElementById("message_password").textContent = message
+    const message = await response.json()
+    document.getElementById("message_password").textContent = message.Message
+  }
+  else {
+    const message = await response.json()
+    document.getElementById("message_password").textContent = message.Message
   }
 }

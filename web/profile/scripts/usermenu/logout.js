@@ -6,6 +6,7 @@ async function Logout() {
     credentials: "include"
   })
   if (response.ok) {
+    console.log("ok")
     window.location.replace("/")
   }
 }

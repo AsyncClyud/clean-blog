@@ -95,12 +95,13 @@ async function SendCreateArticleRequest() {
       })
   })
   if (create_request.ok) {
-    const message = JSON.parse(await create_request.json())
-    if (message != "Success!") {
-      turnstile.reset()
-      document.getElementById("status").textContent = message
-    }
-    document.getElementById("status").textContent = message
+    const message = await create_request.json()
+    document.getElementById("status").textContent = message.Message
+  }
+  else {
+    const message = await create_request.json()
+    document.getElementById("status").textContent = message.Message
+    turnstile.reset()
   }
 }
 
@@ -139,13 +140,16 @@ async function SendUpdateArticleRequest() {
     })
   })
   if (update_request.ok) {
-    const message = JSON.parse(await update_request.json())
-    if (message != "Success!") {
-      turnstile.reset()
-      document.getElementById("status").textContent = message
-    }
-    document.getElementById("status").textContent = message
- }
+    const message = await update_request.json()
+    document.getElementById("status").textContent = message.Message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace(`/article/${Number(GetPathValue())}`)
+  }
+  else {
+    const message = await update_request.json()
+    document.getElementById("status").textContent = message.Message
+    turnstile.reset()
+  }
 }
 
 function UpdatePageRedirect(article_id) {
@@ -167,11 +171,14 @@ async function SendCreateCommentRequest() {
       })
   })
   if (create_request.ok) {
-    const message = JSON.parse(await create_request.json())
-    if (message != "Success!") {
-      turnstile.reset()
-      document.getElementById("status").textContent = message
-    }
-    document.getElementById("status").textContent = message
+    const message = await create_request.json()
+    document.getElementById("status").textContent = message.Message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace("/profile")
+  }
+  else {
+    const message = await create_request.json()
+    document.getElementById("status").textContent = message.Message
+    turnstile.reset()
   }
 }

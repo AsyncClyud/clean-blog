@@ -15,15 +15,14 @@ async function SendLoginRequest() {
     })
   })
   if (response.ok) {
-    const message = JSON.parse(await response.json())
-    if (message != "You has been successfully logined!") {
-      turnstile.reset()
-      document.getElementById("status").textContent = message
-    }
-    else {
-      document.getElementById("status").textContent = message
-      await new Promise(r => setTimeout(r, 2000));
-      window.location.replace("/profile")
-    }
+    const message = await response.json()
+    document.getElementById("status").textContent = message.Message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace("/profile")
+  }
+  else {
+    const message = await response.json()
+    document.getElementById("status").textContent = message.Message
+    turnstile.reset()
   }
 }
