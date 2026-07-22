@@ -2,11 +2,15 @@ package main
 
 import (
 	"blog/internal/config"
-	"blog/internal/handler"
+	posthandler "blog/internal/handler/post"
+	userhandler "blog/internal/handler/user"
 	"blog/internal/middleware"
 	"blog/internal/router"
-	"blog/internal/service"
+	postservice "blog/internal/service/post"
+	userservice "blog/internal/service/user"
 	"blog/internal/storage"
+	poststorage "blog/internal/storage/post"
+	userstorage "blog/internal/storage/user"
 	"log"
 	"net/http"
 	"os"
@@ -25,12 +29,12 @@ func main() {
 	db := storage.ConnectDataBase(os.Getenv("DATABASE_URL"))
 	defer db.Close()
 
-	postDB := storage.NewPostRepo(db)
-	userDB := storage.NewUserRepo(db)
-	postService := service.NewPostService(*postDB)
-	authService := service.NewAuthService(*userDB, []byte(cfg.JWTSecret))
-	postHandler := handler.NewPostHandler(*postService, *authService, *cfg)
-	userHandler := handler.NewUserHandler(*authService, *cfg)
+	postDB := poststorage.NewPostRepo(db)
+	userDB := userstorage.NewUserRepo(db)
+	postService := postservice.NewPostService(*postDB)
+	authService := userservice.NewAuthService(*userDB, []byte(cfg.JWTSecret))
+	postHandler := posthandler.NewPostHandler(*postService, *authService, *cfg)
+	userHandler := userhandler.NewUserHandler(*authService, *cfg)
 	middleware := middleware.NewAuthMiddleware(*authService)
 
 	router := router.Router(*postDB, *userDB, *postHandler, *userHandler, *authService, *middleware)
