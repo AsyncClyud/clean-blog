@@ -1,4 +1,4 @@
-package storage
+package userstorage
 
 import (
 	"blog/internal/models"

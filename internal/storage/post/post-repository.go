@@ -1,4 +1,4 @@
-package storage
+package poststorage
 
 import (
 	"blog/internal/models"
