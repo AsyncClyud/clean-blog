@@ -1,25 +1,27 @@
-package handler
+package userhandler
 
 import (
 	"blog/internal/config"
 	"blog/internal/contextutil"
 	"blog/internal/models"
-	"blog/internal/service"
+	userservice "blog/internal/service/user"
 	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
 	"log"
+	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
 type UserHandler struct {
-	authService service.AuthService
+	authService userservice.AuthService
 	Turnslite   captcha.Verifier
 	Config      config.Config
 }
 
-func NewUserHandler(service service.AuthService, config config.Config) *UserHandler {
+func NewUserHandler(service userservice.AuthService, config config.Config) *UserHandler {
 	return &UserHandler{authService: service, Turnslite: *captcha.NewVerifier(config), Config: config}
 }
 
@@ -82,7 +84,7 @@ func (ush *UserHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) 
 	status_code, id := ush.authService.Register(user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
-		log.Printf("IP %v has been registered", remoteAddr)
+		log.Printf("IP %v has been registered", ush.getClientIP(r))
 		ResponseRegistration(status_code, w, r)
 		return
 	} else {
@@ -112,7 +114,7 @@ func (ush *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	status_code, id := ush.authService.Login(user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(w, id)
-		log.Printf("IP %v has been loggined", remoteAddr)
+		log.Printf("IP %v has been loggined", ush.getClientIP(r))
 		ResponseLogin(status_code, w, r)
 		return
 	} else {
@@ -278,4 +280,19 @@ func (ush *UserHandler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteStrictMode,
 		Expires:  time.Unix(0, 0),
 	})
+}
+
+func (ush *UserHandler) getClientIP(r *http.Request) string {
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		ips := strings.Split(xff, ",")
+		return strings.TrimSpace(ips[0])
+	}
+	if xrip := r.Header.Get("X-Real-IP"); xrip != "" {
+		return xrip
+	}
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+	return ip
 }

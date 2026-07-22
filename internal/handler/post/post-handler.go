@@ -1,9 +1,10 @@
-package handler
+package posthandler
 
 import (
 	"blog/internal/config"
 	"blog/internal/models"
-	"blog/internal/service"
+	postservice "blog/internal/service/post"
+	userservice "blog/internal/service/user"
 	captcha "blog/internal/turnstile"
 	"encoding/json"
 	"html/template"
@@ -12,13 +13,13 @@ import (
 )
 
 type PostHandler struct {
-	postService service.PostService
-	authService service.AuthService
+	postService postservice.PostService
+	authService userservice.AuthService
 	Turnslite   captcha.Verifier
 	Config      config.Config
 }
 
-func NewPostHandler(postservice service.PostService, auth service.AuthService, config config.Config) *PostHandler {
+func NewPostHandler(postservice postservice.PostService, auth userservice.AuthService, config config.Config) *PostHandler {
 	return &PostHandler{postService: postservice, authService: auth, Turnslite: *captcha.NewVerifier(config), Config: config}
 }
 
@@ -120,7 +121,7 @@ func (psh *PostHandler) InsertArticleHandler(w http.ResponseWriter, r *http.Requ
 	ok, err := psh.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
 	if err != nil || !ok {
 		status_code := http.StatusForbidden
-		ResponseLogin(status_code, w, r)
+		ResponseArticle(status_code, w, r)
 		return
 	}
 
@@ -235,7 +236,7 @@ func (psh *PostHandler) InsertCommentHandler(w http.ResponseWriter, r *http.Requ
 	ok, err := psh.Turnslite.Verify(r.Context(), cfToken, remoteAddr)
 	if err != nil || !ok {
 		status_code := http.StatusForbidden
-		ResponseLogin(status_code, w, r)
+		ResponseComment(status_code, w, r)
 		return
 	}
 
